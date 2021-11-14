@@ -1,7 +1,7 @@
 // import { Greeting } from "./Greeting";
 // import { Bye } from "./Greeting";
 // import Product from "./Product";
-import Input from "./Input";
+import ToDo from "./ToDo";
 import 'bootstrap/dist/css/bootstrap.min.css';
 function App() {
   return (
@@ -25,7 +25,7 @@ function App() {
     //       description="Apples from dsf" />
     //   </thead>
     // </table> */}
-    <Input />
+    <ToDo />
   );
 }
 
