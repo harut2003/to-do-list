@@ -1,7 +1,7 @@
 // import { Greeting } from "./Greeting";
 // import { Bye } from "./Greeting";
 // import Product from "./Product";
-import ToDo from "./ToDo";
+import ToDo from "./components/ToDo";
 import 'bootstrap/dist/css/bootstrap.min.css';
 function App() {
   return (
