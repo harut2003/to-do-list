@@ -2,31 +2,33 @@
 // import { Bye } from "./Greeting";
 // import Product from "./Product";
 import ToDo from "./components/ToDo";
-import 'bootstrap/dist/css/bootstrap.min.css';
-function App() {
-  return (
+import "bootstrap/dist/css/bootstrap.min.css";
+import About from "./Pages/About/About";
+import Contact from "./Pages/Contact/Contact";
+import NotFound from "./Pages/NotFound/NotFound";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Header from "./components/Header/Header";
+import SingleTask from "./Pages/SingleTask/SingleTask";
+import "./stylesheets/App.css";
+import { Component } from "react";
+class App extends Component {
+  render() {
+    return (
+      <BrowserRouter>
+        <Header />
+        <Routes>
+          <Route exact path={"/"} element={<Navigate replace to="/home" />} />
+          <Route exact path={"/home"} element={<ToDo />} />
+          <Route exact path={"/task"} element={<SingleTask />} />
+          <Route exact path={"/about"} element={<About />} />
+          <Route exact path={"/Contact"} element={<Contact />} />
+          <Route exact path={"/404"} element={<NotFound />} />
 
-    // {/* <Greeting surname="Smith" />
-    // <Bye /> */}
-    // {/* <table className="products">
-    //   <thead>
-    //     <tr>
-    //       <th>Name</th>
-    //       <th>Price</th>
-    //       <th>Description</th>
-    //     </tr>
-    //     <Product
-    //       name="banabas"
-    //       price="1$"
-    //       description="Fresh bananas from Ecuador" />
-    //     <Product
-    //       name="apple"
-    //       price="2$"
-    //       description="Apples from dsf" />
-    //   </thead>
-    // </table> */}
-    <ToDo />
-  );
+          <Route exact path={"*"} element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    );
+  }
 }
 
 export default App;
