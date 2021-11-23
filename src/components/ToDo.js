@@ -4,177 +4,149 @@ import EditTaskModal from "./EditTaskModal";
 import Task from "./task/Task";
 import ModalRemove from "./ModalRemove";
 import TaskModal from "./TaskModal";
-
+import { connect } from "react-redux";
+import { getTasks, selectToggle, visibleTaskModal } from "../store/actions";
 //import "./stylesheets/test.css";
-export default class ToDo extends Component {
+class ToDo extends Component {
   state = {
     tasks: [],
-    selectedTasks: new Set(),
+    //selectedTasks: new Set(),
     show: false,
-    isVisibleModal: false,
     editedTask: null,
   };
-  // editItem = (id, bool) => {
-  //     const { tasks } = this.state;
-  //     console.log(tasks);
-  //     const editTasks = tasks.map(obj => {
-  //         if (obj._id === id) {
-  //             obj.onEdit = bool;
-  //         }
-  //         return obj;
-  //     });
-  //     this.setState({
-  //         tasks: editTasks
-  //     });
-  // };
+
   componentDidMount() {
-    fetch("http://localhost:3001/task")
-      .then(async (res) => {
-        const result = await res.json();
-        if (res.status >= 400) {
-          if (result.error) {
-            throw result.error;
-          } else {
-            throw new Error("Something went wrong");
-          }
-        }
-        this.setState({
-          tasks: result,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    this.props.getTasks();
+    // fetch("http://localhost:3001/task")
+    //   .then(async (res) => {
+    //     const result = await res.json();
+    //     if (res.status >= 400) {
+    //       if (result.error) {
+    //         throw result.error;
+    //       } else {
+    //         throw new Error("Something went wrong");
+    //       }
+    //     }
+    //     this.setState({
+    //       tasks: result,
+    //     });
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
   }
 
-  // request = (fetch, stateKey, stateValue, fetchBody) => {
-  //     fetch("http://localhost:3001/task", fetchBody).then(async (res) => {
-  //         const result = await res.json();
-  //         if (res.status >= 400) {
-  //             if (result.error) {
-  //                 throw result.error;
-  //             } else {
-  //                 throw new Error("Something went wrong");
-  //             }
+  // addTask = (newTask) => {
+  //   fetch("http://localhost:3001/task", {
+  //     method: "POST",
+  //     body: JSON.stringify(newTask),
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   })
+  //     .then(async (res) => {
+  //       const result = await res.json();
+  //       if (res.status >= 400) {
+  //         if (result.error) {
+  //           throw result.error;
+  //         } else {
+  //           throw new Error("Something went wrong");
   //         }
-  //         this.setState({
-  //             stateKey: stateValue,
-  //         });
+  //       }
+  //       const { tasks } = this.state;
+  //       this.setState({
+  //         tasks: [...tasks, result],
+  //         isVisibleModal: false,
+  //       });
   //     })
-  //         .catch((err) => {
-  //             console.log(err);
-  //         });
-  // }
-  addTask = (newTask) => {
-    fetch("http://localhost:3001/task", {
-      method: "POST",
-      body: JSON.stringify(newTask),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then(async (res) => {
-        const result = await res.json();
-        if (res.status >= 400) {
-          if (result.error) {
-            throw result.error;
-          } else {
-            throw new Error("Something went wrong");
-          }
-        }
-        const { tasks } = this.state;
-        this.setState({
-          tasks: [...tasks, result],
-          isVisibleModal: false,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-  deleteItem = (id) => {
-    fetch(`http://localhost:3001/task/${id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then(async (res) => {
-        const result = await res.json();
-        if (res.status >= 400) {
-          if (result.error) {
-            throw result.error;
-          } else {
-            throw new Error("Something went wrong");
-          }
-        }
-        const delArr = this.state.tasks.filter((i) => i._id !== id);
-        this.setState({ tasks: delArr });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // };
+  // deleteItem = (id) => {
+  //   fetch(`http://localhost:3001/task/${id}`, {
+  //     method: "DELETE",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   })
+  //     .then(async (res) => {
+  //       const result = await res.json();
+  //       if (res.status >= 400) {
+  //         if (result.error) {
+  //           throw result.error;
+  //         } else {
+  //           throw new Error("Something went wrong");
+  //         }
+  //       }
+  //       const delArr = this.state.tasks.filter((i) => i._id !== id);
+  //       this.setState({ tasks: delArr });
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // };
 
-  changeCheck = (id) => {
-    const selectedTasks = new Set([...this.state.selectedTasks]);
-    if (!selectedTasks.has(id)) {
-      selectedTasks.add(id);
-    } else {
-      selectedTasks.delete(id);
-    }
-    this.setState({
-      selectedTasks,
-      tasks: [...this.state.tasks],
-    });
-  };
-  removeSelected = () => {
-    const { tasks, selectedTasks } = this.state;
-    fetch(`http://localhost:3001/task/`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ tasks: [...selectedTasks] }),
-    })
-      .then(async (res) => {
-        const result = await res.json();
-        if (res.status >= 400) {
-          if (result.error) {
-            throw result.error;
-          } else {
-            throw new Error("Something went wrong");
-          }
-        }
+  // changeCheck = (id) => {
+  //   const selectedTasks = new Set([...this.state.selectedTasks]);
+  //   if (!selectedTasks.has(id)) {
+  //     selectedTasks.add(id);
+  //   } else {
+  //     selectedTasks.delete(id);
+  //   }
+  //   this.setState({
+  //     selectedTasks,
+  //     tasks: [...this.state.tasks],
+  //   });
+  // };
+  // removeSelected = () => {
+  //   const { tasks, selectedTasks } = this.state;
+  //   fetch(`http://localhost:3001/task/`, {
+  //     method: "PATCH",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({ tasks: [...selectedTasks] }),
+  //   })
+  //     .then(async (res) => {
+  //       const result = await res.json();
+  //       if (res.status >= 400) {
+  //         if (result.error) {
+  //           throw result.error;
+  //         } else {
+  //           throw new Error("Something went wrong");
+  //         }
+  //       }
 
-        this.setState({
-          tasks: tasks.filter((task) => !selectedTasks.has(task._id)),
-          selectedTasks: new Set(),
-          show: false,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  //       this.setState({
+  //         tasks: tasks.filter((task) => !selectedTasks.has(task._id)),
+  //         selectedTasks: new Set(),
+  //         show: false,
+  //       });
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // };
   handleToggle = () => {
     this.setState({
       show: !this.state.show,
     });
   };
-  selectToggle = () => {
-    const { tasks, selectedTasks } = this.state;
-    const taskId = tasks.map((obj) => obj._id);
-    if (tasks.length === selectedTasks.size) {
-      this.setState({
-        selectedTasks: new Set(),
-      });
-      return;
-    }
-    this.setState({
-      selectedTasks: new Set(taskId),
-    });
-  };
+  // selectToggle = () => {
+  //   const { tasks } = this.state;
+  //   const { selectedTasks } = this.props;
+  //   const taskId = tasks.map((obj) => obj._id);
+  //   if (tasks.length === selectedTasks.size) {
+  //     this.setState({
+  //       selectedTasks: new Set(),
+  //     });
+  //     return;
+  //   }
+  //   this.setState({
+  //     selectedTasks: new Set(taskId),
+  //   });
+  // };
   showTaskModal = () => {
     this.setState({
       isVisibleModal: !this.state.isVisibleModal,
@@ -185,41 +157,42 @@ export default class ToDo extends Component {
       editedTask,
     });
   };
-  addEditedTask = (editedTask) => {
-    fetch(`http://localhost:3001/task/${editedTask._id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(editedTask),
-    })
-      .then(async (res) => {
-        const result = await res.json();
-        if (res.status >= 400) {
-          if (result.error) {
-            throw result.error;
-          } else {
-            throw new Error("Something went wrong");
-          }
-        }
-        const editedTasks = [...this.state.tasks];
-        const editedIndex = editedTasks.findIndex(
-          (obj) => obj._id === editedTask._id
-        );
-        editedTasks[editedIndex] = editedTask;
-        this.setState({
-          tasks: editedTasks,
-          editedTask: null,
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  // addEditedTask = (editedTask) => {
+  //   fetch(`http://localhost:3001/task/${editedTask._id}`, {
+  //     method: "PUT",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify(editedTask),
+  //   })
+  //     .then(async (res) => {
+  //       const result = await res.json();
+  //       if (res.status >= 400) {
+  //         if (result.error) {
+  //           throw result.error;
+  //         } else {
+  //           throw new Error("Something went wrong");
+  //         }
+  //       }
+  //       const editedTasks = [...this.state.tasks];
+  //       const editedIndex = editedTasks.findIndex(
+  //         (obj) => obj._id === editedTask._id
+  //       );
+  //       editedTasks[editedIndex] = editedTask;
+  //       this.setState({
+  //         tasks: editedTasks,
+  //         editedTask: null,
+  //       });
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // };
 
   render() {
-    const { tasks, selectedTasks, show, isVisibleModal, editedTask } =
-      this.state;
+    const { show, editedTask } = this.state;
+    const { tasks, selectedTasks, visibleTaskModal, toggleAddTaskModal } =
+      this.props;
     const selectUn = tasks.length === selectedTasks.size;
     return (
       <Container className="mt-3">
@@ -227,7 +200,7 @@ export default class ToDo extends Component {
           <Col>
             <Button
               className="w-100"
-              onClick={this.showTaskModal}
+              onClick={visibleTaskModal}
               variant="success"
               id="button-addon2"
             >
@@ -241,7 +214,7 @@ export default class ToDo extends Component {
               <Button
                 className="w-25 mt-3"
                 variant={selectUn ? "secondary" : "warning"}
-                onClick={this.selectToggle}
+                onClick={() => this.props.selectToggle(tasks, selectedTasks)}
               >
                 {selectUn ? "Deselect All" : "Select All"}{" "}
               </Button>
@@ -251,12 +224,10 @@ export default class ToDo extends Component {
         <Row className="mt-3">
           {tasks.map((task) => {
             return (
-              <Col key={task._id} xs={12} sm={6} md={4} lg={3}>
+              <Col className="pb-3" key={task._id} xs={12} sm={6} md={4} lg={3}>
                 <Task
                   task={task}
                   editedTask={this.closeEditTaskModal}
-                  deleteItem={this.deleteItem}
-                  changeCheck={this.changeCheck}
                   disabled={!!selectedTasks.size}
                   selected={selectedTasks.has(task._id)}
                 />
@@ -278,15 +249,12 @@ export default class ToDo extends Component {
           </Col>
         </Row>
         <ModalRemove
-          count={selectedTasks.size}
           show={show}
           hideFunction={this.handleToggle}
           removeFunction={this.removeSelected}
         />
 
-        {isVisibleModal ? (
-          <TaskModal getData={this.addTask} onClose={this.showTaskModal} />
-        ) : null}
+        {toggleAddTaskModal ? <TaskModal /> : null}
         {editedTask ? (
           <EditTaskModal
             task={editedTask}
@@ -298,3 +266,30 @@ export default class ToDo extends Component {
     );
   }
 }
+
+const mapStateToProps = ({ tasks, selectedTasks, toggleAddTaskModal }) => ({
+  tasks,
+  selectedTasks,
+  toggleAddTaskModal,
+});
+
+const mapDispatchToProps = {
+  getTasks,
+  selectToggle,
+  visibleTaskModal,
+};
+//selectToggle = () => {
+//   const { tasks } = this.state;
+//   const { selectedTasks } = this.props;
+//   const taskId = tasks.map((obj) => obj._id);
+//   if (tasks.length === selectedTasks.size) {
+//     this.setState({
+//       selectedTasks: new Set(),
+//     });
+//     return;
+//   }
+//   this.setState({
+//     selectedTasks: new Set(taskId),
+//   });
+// };
+export default connect(mapStateToProps, mapDispatchToProps)(ToDo);

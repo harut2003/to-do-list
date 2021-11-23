@@ -12,6 +12,14 @@ import SingleTask from "./Pages/SingleTask/SingleTask";
 import "./stylesheets/App.css";
 import { Component } from "react";
 class App extends Component {
+  state = {
+    clickedTask: null,
+  };
+  getClickedTask = (clickedTask) => {
+    this.setState({
+      clickedTask,
+    });
+  };
   render() {
     return (
       <BrowserRouter>
@@ -19,7 +27,7 @@ class App extends Component {
         <Routes>
           <Route exact path={"/"} element={<Navigate replace to="/home" />} />
           <Route exact path={"/home"} element={<ToDo />} />
-          <Route exact path={"/task"} element={<SingleTask />} />
+          <Route exact path={"/task/:taskId"} element={<SingleTask />} />
           <Route exact path={"/about"} element={<About />} />
           <Route exact path={"/Contact"} element={<Contact />} />
           <Route exact path={"/404"} element={<NotFound />} />
