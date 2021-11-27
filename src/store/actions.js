@@ -1,69 +1,119 @@
 import request from "../helpers/request";
-export function getTasks() {
+import * as actionTypes from "./actionTypes";
+import history from "../helpers/history";
+
+const apiHost = process.env.REACT_APP_API_HOST;
+
+export function getTasks(params = {}) {
+  const newParams = {};
+  for (const key in params) {
+    if (params[key]) {
+      newParams[key] = params[key];
+    }
+  }
+
+  const query = Object.entries(newParams)
+    .map(([key, value]) => `${key}=${value}`)
+    .join("&");
+
   return (dispatch) => {
-    request("http://localhost:3001/task").then((tasks) => {
-      dispatch({ type: "GET_TASKS", tasks });
-    });
+    dispatch({ type: actionTypes.PENDING });
+    request(`${apiHost}/task/?${query}`)
+      .then((tasks) => {
+        dispatch({ type: actionTypes.GET_TASKS, tasks });
+        history.replace(query && "?" + query.toString());
+      })
+      .catch((err) => {
+        dispatch({ type: actionTypes.ERROR, error: err.message });
+      });
   };
 }
+
+export const getTask = (id) => {
+  return (dispatch) => {
+    dispatch({ type: actionTypes.PENDING });
+    request(`${apiHost}/task/${id}`)
+      .then((singleTask) => {
+        dispatch({ type: actionTypes.GET_TASK, singleTask });
+      })
+      .catch((err) => {
+        dispatch({ type: actionTypes.ERROR, error: err.message });
+      });
+  };
+};
 
 export function selectToggle(tasks, selectedTasks) {
   const taskId = tasks.map((obj) => obj._id);
 
   return (dispatch) => {
     if (tasks.length === selectedTasks.size) {
-      dispatch({ type: "SELECT_TOGGLE", selectedTasks: new Set() });
+      dispatch({ type: actionTypes.SELECT_TOGGLE, selectedTasks: new Set() });
       return;
     }
-    dispatch({ type: "SELECT_TOGGLE", selectedTasks: new Set(taskId) });
+    dispatch({
+      type: actionTypes.SELECT_TOGGLE,
+      selectedTasks: new Set(taskId),
+    });
   };
 }
 
-export function deleteTask(id) {
+export function deleteTask(id, from, goHome) {
   return (dispatch) => {
-    request(`http://localhost:3001/task/${id}`, "DELETE").then(() => {
-      dispatch({ type: "DELETE_TASK", deletedId: id });
-    });
+    dispatch({ type: actionTypes.PENDING });
+    request(`${apiHost}/task/${id}`, "DELETE")
+      .then(() => {
+        dispatch({ type: actionTypes.DELETE_TASK, deletedId: id, from });
+        goHome && goHome("/home");
+      })
+      .catch((err) => {
+        dispatch({ type: actionTypes.ERROR, error: err.message });
+      });
   };
 }
 
 export function setSelectedTasks(id) {
   return (dispatch) => {
-    dispatch({ type: "SET_SELECTED_TASKS", id });
+    dispatch({ type: actionTypes.SET_SELECTED_TASKS, id });
   };
 }
 
 export function deleteSelectedTasks(selectedTasks, hideFunction) {
   return (dispatch) => {
-    request("http://localhost:3001/task", "PATCH", {
+    dispatch({ type: actionTypes.PENDING });
+
+    request(`${apiHost}/task`, "PATCH", {
       tasks: [...selectedTasks],
     }).then((selectedTasks) => {
-      dispatch({ type: "DELETE_SELECTED_TASKS", selectedTasks });
+      dispatch({ type: actionTypes.DELETE_SELECTED_TASKS, selectedTasks });
       hideFunction();
     });
   };
 }
-export function addTask(newTask) {
+export function addTask(newTask, hideModal) {
   return (dispatch) => {
-    request("http://localhost:3001/task", "POST", newTask).then((newTask) => {
-      dispatch({ type: "ADD_TASK", newTask });
+    dispatch({ type: actionTypes.PENDING });
+
+    request(`${apiHost}/task`, "POST", newTask).then((newTask) => {
+      dispatch({ type: actionTypes.ADD_TASK, newTask });
+      hideModal();
     });
   };
 }
-export function editTask(editedTask, closeModal) {
+export function editTask(editedTask, closeModal, from) {
   return (dispatch) => {
-    request(
-      `http://localhost:3001/task/${editedTask._id}`,
-      "PUT",
-      editedTask
-    ).then((editedTask) => {
-      dispatch({ type: "EDIT_TASK", editedTask });
-      closeModal();
-    });
+    dispatch({ type: actionTypes.PENDING });
+
+    request(`${apiHost}/task/${editedTask._id}`, "PUT", editedTask).then(
+      (editedTask) => {
+        dispatch({ type: actionTypes.EDIT_TASK, editedTask, from });
+        closeModal();
+      }
+    );
   };
 }
-export function visibleTaskModal() {
+
+export function setFilters(key, value) {
   return (dispatch) => {
-    dispatch({ type: "VISIBLE_TASK_MODAL" });
+    dispatch({ type: actionTypes.SET_FILTERS, key, value });
   };
 }

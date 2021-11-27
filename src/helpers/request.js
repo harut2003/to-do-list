@@ -22,9 +22,7 @@ function request(url, method = "GET", body) {
       }
       return result;
     })
-    .catch((err) => {
-      console.log(err);
-    });
+    
 }
 
 export default request;

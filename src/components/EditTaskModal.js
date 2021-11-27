@@ -34,7 +34,7 @@ class TaskModal extends PureComponent {
       description,
       date: formatDate(date.toISOString()),
     };
-    this.props.editTask(editedTask, this.props.onClose);
+    this.props.editTask(editedTask, this.props.onClose, this.props.from);
   };
   handleChangeDate = (e) => {
     this.setState({
@@ -93,6 +93,7 @@ class TaskModal extends PureComponent {
 TaskModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   task: PropTypes.object.isRequired,
+  from: PropTypes.string,
 };
 const mapDispatchToProps = {
   editTask,

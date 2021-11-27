@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 export function formatDate(date) {
-  return date.slice(0, 10);
+  return date.toString().slice(0, 10);
 }
 export function textCut(str = "", taskId) {
   if (str.length < 60) {

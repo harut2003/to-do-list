@@ -2,18 +2,13 @@ import { Button, Modal } from "react-bootstrap";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { deleteSelectedTasks } from "../store/actions";
-function ModalRemove({
-  show,
-  hideFunction,
-  count,
-  deleteSelectedTasks,
-  selectedTasks,
-}) {
+function ModalRemove({ hideFunction, deleteSelectedTasks, selectedTasks }) {
   return (
-    <Modal show={show} onHide={hideFunction} centered>
+    <Modal show={true} onHide={hideFunction} centered>
       <Modal.Header closeButton>
         <Modal.Title>
-          Are you sure to remove {count} task{count > 1 ? "s" : ""}?
+          Are you sure to remove {selectedTasks.size} task
+          {selectedTasks.size > 1 ? "s" : ""}?
         </Modal.Title>
       </Modal.Header>
       <Modal.Footer>
@@ -31,7 +26,6 @@ function ModalRemove({
   );
 }
 ModalRemove.propTypes = {
-  show: PropTypes.bool.isRequired,
   hideFunction: PropTypes.func.isRequired,
 };
 const mapStateToProps = ({ selectedTasks }) => {

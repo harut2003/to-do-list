@@ -11,7 +11,6 @@ const state = store;
 
 ReactDOM.render(
   <React.StrictMode>
-    {/* <App /> */}
     <Provider store={state}>
       <App />
     </Provider>

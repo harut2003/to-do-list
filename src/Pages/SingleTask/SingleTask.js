@@ -1,62 +1,33 @@
 import { Card, Container, Button } from "react-bootstrap";
 import { formatDate } from "../../helpers/utils";
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 import EditTaskModal from "../../components/EditTaskModal";
-
-function SingleTask() {
-  let [state, setState] = useState({ task: null, showModal: false });
+import { getTask, deleteTask } from "../../store/actions";
+import { connect } from "react-redux";
+import { useNavigate } from "react-router-dom";
+function SingleTask({ getTask, task, deleteTask }) {
+  let [state, setState] = useState({
+    showModal: false,
+  });
   let params = useParams();
-  let navigate = useNavigate();
+  console.log(params);
   const id = params.taskId;
-  const { task, showModal } = state;
+  const { showModal } = state;
   useEffect(() => {
-    fetch(`http://localhost:3001/task/${id}`)
-      .then(async (res) => {
-        const result = await res.json();
-        if (res.status >= 400) {
-          if (result.error) {
-            throw result.error;
-          } else {
-            throw new Error("Something went wrong");
-          }
-        }
-        setState({ ...state, task: result });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    getTask(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
+  let navigate = useNavigate();
   const deleteItem = () => {
-    fetch(`http://localhost:3001/task/${task._id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then(async (res) => {
-        const result = await res.json();
-        if (res.status >= 400) {
-          if (result.error) {
-            throw result.error;
-          } else {
-            throw new Error("Something went wrong");
-          }
-        }
+    deleteTask(task._id, "single", navigate);
+  };
 
-        navigate("/home");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-  const editTask = (task) => {
-    setState({ task, showModal: false });
-  };
+  // const editTask = (task) => {
+  //   setState({ task, showModal: false });
+  // };
   const toggleEditModal = () => {
     setState({ ...state, showModal: !showModal });
   };
@@ -65,7 +36,7 @@ function SingleTask() {
     <Container>
       <Card>
         <Card.Body>
-          {state.task && (
+          {task && (
             <>
               <Card.Title>{task.title}</Card.Title>
               <Card.Text>{task.description} </Card.Text>
@@ -81,13 +52,19 @@ function SingleTask() {
         </Card.Body>
       </Card>
       {showModal && (
-        <EditTaskModal
-          task={task}
-          addTask={editTask}
-          onClose={toggleEditModal}
-        />
+        <EditTaskModal task={task} from="single" onClose={toggleEditModal} />
       )}
     </Container>
   );
 }
-export default SingleTask;
+
+const mupStateToProps = ({ singleTask }) => ({
+  task: singleTask,
+});
+
+const mupDispatchToProps = {
+  getTask,
+  deleteTask,
+};
+
+export default connect(mupStateToProps, mupDispatchToProps)(SingleTask);

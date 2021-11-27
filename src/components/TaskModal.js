@@ -1,9 +1,9 @@
 import { createRef, PureComponent } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
-import DatePicker from "react-datepicker";
 import { formatDate } from "../helpers/utils";
+import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { addTask, visibleTaskModal } from "../store/actions";
+import { addTask } from "../store/actions";
 import { connect } from "react-redux";
 class TaskModal extends PureComponent {
   constructor(props) {
@@ -37,8 +37,7 @@ class TaskModal extends PureComponent {
       description,
       date: formatDate(date.toISOString()),
     };
-    this.props.visibleTaskModal();
-    this.props.addTask(newTask);
+    this.props.addTask(newTask, this.props.toggleModal);
   };
   handleChangeDate = (e) => {
     this.setState({
@@ -49,7 +48,7 @@ class TaskModal extends PureComponent {
 
   render() {
     return (
-      <Modal show={true} onHide={visibleTaskModal} centered>
+      <Modal show={true} centered onHide={this.props.toggleModal}>
         <Modal.Header closeButton>
           <Modal.Title>Your task</Modal.Title>
         </Modal.Header>
@@ -80,7 +79,7 @@ class TaskModal extends PureComponent {
           />
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={visibleTaskModal}>
+          <Button variant="secondary" onClick={this.props.toggleModal}>
             Cancel
           </Button>
           <Button variant="success" onClick={this.handleSubmit}>
@@ -95,7 +94,6 @@ class TaskModal extends PureComponent {
 
 const mapDispatchToProps = {
   addTask,
-  visibleTaskModal,
 };
 
 export default connect(null, mapDispatchToProps)(TaskModal);

@@ -1,152 +1,55 @@
 import { Component } from "react";
-import { Button, Container, Row, Col } from "react-bootstrap";
+import { Button, Container, Row, Col, Form } from "react-bootstrap";
 import EditTaskModal from "./EditTaskModal";
 import Task from "./task/Task";
 import ModalRemove from "./ModalRemove";
 import TaskModal from "./TaskModal";
+import Search from "./Search";
+import Sort from "./Sort/Sort";
+import Date from "./DatePick";
 import { connect } from "react-redux";
-import { getTasks, selectToggle, visibleTaskModal } from "../store/actions";
-//import "./stylesheets/test.css";
+import { getTasks, selectToggle, setFilters } from "../store/actions";
+import history from "../helpers/history";
+const statusOptions = [
+  {
+    label: "Active",
+    value: "active",
+  },
+  {
+    label: "Done",
+    value: "done",
+  },
+];
+
 class ToDo extends Component {
   state = {
     tasks: [],
-    //selectedTasks: new Set(),
+    active: false,
+    done: false,
     show: false,
     editedTask: null,
+    showAddTaskModal: false,
   };
 
   componentDidMount() {
-    this.props.getTasks();
-    // fetch("http://localhost:3001/task")
-    //   .then(async (res) => {
-    //     const result = await res.json();
-    //     if (res.status >= 400) {
-    //       if (result.error) {
-    //         throw result.error;
-    //       } else {
-    //         throw new Error("Something went wrong");
-    //       }
-    //     }
-    //     this.setState({
-    //       tasks: result,
-    //     });
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
+    if (history.location.search) {
+      const options = history.location.search
+        .slice(1)
+        .split("&")
+        .map((option) => option.split("="));
+      options.map(([optionName, optionValue]) =>
+        this.props.setFilters(optionName, optionValue)
+      );
+    } else {
+      this.props.getTasks();
+    }
   }
 
-  // addTask = (newTask) => {
-  //   fetch("http://localhost:3001/task", {
-  //     method: "POST",
-  //     body: JSON.stringify(newTask),
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //   })
-  //     .then(async (res) => {
-  //       const result = await res.json();
-  //       if (res.status >= 400) {
-  //         if (result.error) {
-  //           throw result.error;
-  //         } else {
-  //           throw new Error("Something went wrong");
-  //         }
-  //       }
-  //       const { tasks } = this.state;
-  //       this.setState({
-  //         tasks: [...tasks, result],
-  //         isVisibleModal: false,
-  //       });
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // };
-  // deleteItem = (id) => {
-  //   fetch(`http://localhost:3001/task/${id}`, {
-  //     method: "DELETE",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //   })
-  //     .then(async (res) => {
-  //       const result = await res.json();
-  //       if (res.status >= 400) {
-  //         if (result.error) {
-  //           throw result.error;
-  //         } else {
-  //           throw new Error("Something went wrong");
-  //         }
-  //       }
-  //       const delArr = this.state.tasks.filter((i) => i._id !== id);
-  //       this.setState({ tasks: delArr });
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // };
-
-  // changeCheck = (id) => {
-  //   const selectedTasks = new Set([...this.state.selectedTasks]);
-  //   if (!selectedTasks.has(id)) {
-  //     selectedTasks.add(id);
-  //   } else {
-  //     selectedTasks.delete(id);
-  //   }
-  //   this.setState({
-  //     selectedTasks,
-  //     tasks: [...this.state.tasks],
-  //   });
-  // };
-  // removeSelected = () => {
-  //   const { tasks, selectedTasks } = this.state;
-  //   fetch(`http://localhost:3001/task/`, {
-  //     method: "PATCH",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({ tasks: [...selectedTasks] }),
-  //   })
-  //     .then(async (res) => {
-  //       const result = await res.json();
-  //       if (res.status >= 400) {
-  //         if (result.error) {
-  //           throw result.error;
-  //         } else {
-  //           throw new Error("Something went wrong");
-  //         }
-  //       }
-
-  //       this.setState({
-  //         tasks: tasks.filter((task) => !selectedTasks.has(task._id)),
-  //         selectedTasks: new Set(),
-  //         show: false,
-  //       });
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // };
   handleToggle = () => {
     this.setState({
       show: !this.state.show,
     });
   };
-  // selectToggle = () => {
-  //   const { tasks } = this.state;
-  //   const { selectedTasks } = this.props;
-  //   const taskId = tasks.map((obj) => obj._id);
-  //   if (tasks.length === selectedTasks.size) {
-  //     this.setState({
-  //       selectedTasks: new Set(),
-  //     });
-  //     return;
-  //   }
-  //   this.setState({
-  //     selectedTasks: new Set(taskId),
-  //   });
-  // };
   showTaskModal = () => {
     this.setState({
       isVisibleModal: !this.state.isVisibleModal,
@@ -157,50 +60,82 @@ class ToDo extends Component {
       editedTask,
     });
   };
-  // addEditedTask = (editedTask) => {
-  //   fetch(`http://localhost:3001/task/${editedTask._id}`, {
-  //     method: "PUT",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(editedTask),
-  //   })
-  //     .then(async (res) => {
-  //       const result = await res.json();
-  //       if (res.status >= 400) {
-  //         if (result.error) {
-  //           throw result.error;
-  //         } else {
-  //           throw new Error("Something went wrong");
-  //         }
-  //       }
-  //       const editedTasks = [...this.state.tasks];
-  //       const editedIndex = editedTasks.findIndex(
-  //         (obj) => obj._id === editedTask._id
-  //       );
-  //       editedTasks[editedIndex] = editedTask;
-  //       this.setState({
-  //         tasks: editedTasks,
-  //         editedTask: null,
-  //       });
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // };
+  openModal = () => {
+    this.setState({ showAddTaskModal: !this.state.showAddTaskModal });
+  };
 
+  changeStatus = (e, name) => {
+    console.log(e);
+    console.log(name);
+    if (name === "active") {
+      this.setState({
+        done: false,
+        active: !this.state.active,
+      });
+    } else {
+      this.setState({
+        active: false,
+        done: !this.state.done,
+      });
+    }
+    // console.log(this.state[name]);
+    // const toggleName = this.state[name];
+    // this.setState({
+    //   [name]: !toggleName,
+    // });
+    // let sendingValue;
+    // if (this.state.active) {
+    //   sendingValue = "active";
+    // } else if (this.state.done) {
+    //   sendingValue = "done";
+    // }
+    // console.log(
+    //   "this.state.active",
+    //   this.state.active,
+    //   "this.state.done",
+    //   this.state.done
+    // );
+    // this.props.setFilters("status", sendingValue);
+  };
+  componentDidUpdate(prevProps, prevState) {
+    const { active, done } = this.state;
+    const thisStatus = this.props.searchingParams.status;
+    const prevStatus = prevProps.searchingParams.status;
+    if (prevState.active !== active || prevState.done !== done) {
+      let sendingValue = "";
+      if (active) {
+        sendingValue = "active";
+      } else if (done) {
+        sendingValue = "done";
+      }
+      if (thisStatus === sendingValue) {
+        return;
+      }
+      this.props.setFilters("status", sendingValue);
+    }
+    if (thisStatus !== prevStatus) {
+      if (thisStatus) {
+        this.setState({ [thisStatus]: true });
+      }
+    }
+  }
   render() {
-    const { show, editedTask } = this.state;
-    const { tasks, selectedTasks, visibleTaskModal, toggleAddTaskModal } =
-      this.props;
+    const { show, editedTask, showAddTaskModal } = this.state;
+    const { tasks, selectedTasks } = this.props;
     const selectUn = tasks.length === selectedTasks.size;
     return (
       <Container className="mt-3">
+        <Row className="mb-4">
+          <Col>
+            <Search />
+          </Col>
+        </Row>
         <Row>
           <Col>
+            <Date />
             <Button
               className="w-100"
-              onClick={visibleTaskModal}
+              onClick={this.openModal}
               variant="success"
               id="button-addon2"
             >
@@ -208,6 +143,30 @@ class ToDo extends Component {
             </Button>
           </Col>
         </Row>
+        <Row>
+          <Col>
+            <Sort />
+          </Col>
+          <Col>
+            <div className="mb-3 d-flex align-items-center flex-column">
+              <span>Status</span>
+              <div>
+                {statusOptions.map((option, i) => (
+                  <Form.Check
+                    onChange={(e) => this.changeStatus(e, option.value)}
+                    key={i}
+                    checked={this.state[option.value]}
+                    inline
+                    label={option.label}
+                  />
+                ))}
+              </div>
+            </div>
+          </Col>
+        </Row>
+        {/* <Row>
+          <Col></Col>
+        </Row> */}
         <Row>
           <Col className="d-flex justify-content-end">
             {!!selectedTasks.size && tasks.length > 1 && (
@@ -248,13 +207,13 @@ class ToDo extends Component {
             )}
           </Col>
         </Row>
-        <ModalRemove
-          show={show}
-          hideFunction={this.handleToggle}
-          removeFunction={this.removeSelected}
-        />
-
-        {toggleAddTaskModal ? <TaskModal /> : null}
+        {!!selectedTasks.size && show && (
+          <ModalRemove
+            hideFunction={this.handleToggle}
+            removeFunction={this.removeSelected}
+          />
+        )}
+        {showAddTaskModal ? <TaskModal toggleModal={this.openModal} /> : null}
         {editedTask ? (
           <EditTaskModal
             task={editedTask}
@@ -267,16 +226,22 @@ class ToDo extends Component {
   }
 }
 
-const mapStateToProps = ({ tasks, selectedTasks, toggleAddTaskModal }) => ({
+const mapStateToProps = ({
   tasks,
   selectedTasks,
   toggleAddTaskModal,
+  searchingParams,
+}) => ({
+  tasks,
+  selectedTasks,
+  toggleAddTaskModal,
+  searchingParams,
 });
 
 const mapDispatchToProps = {
   getTasks,
   selectToggle,
-  visibleTaskModal,
+  setFilters,
 };
 //selectToggle = () => {
 //   const { tasks } = this.state;
