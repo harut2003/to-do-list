@@ -9,6 +9,9 @@ import {
 } from "react-bootstrap";
 import SubmitModal from "./SubmitModal";
 import styles from "./contact.module.css";
+import request from "../../helpers/request";
+const apiHost = process.env.REACT_APP_API_HOST;
+
 export default function Contact() {
   const newContact = {
     name: "",
@@ -61,22 +64,8 @@ export default function Contact() {
       return;
     }
 
-    fetch("http://localhost:3001/form", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then(async (res) => {
-        const result = await res.json();
-        if (res.status >= 400) {
-          if (result.error) {
-            throw result.error;
-          } else {
-            throw new Error("Something went wrong");
-          }
-        }
+    request(`${apiHost}/form`, "POST", data)
+      .then(() => {
         setData(newContact);
         setPopUp(true);
         setTimeout(() => {

@@ -28,6 +28,7 @@ function reducer(state = defaultState, action) {
         isLoading: true,
         successMessage: "",
         errorMessage: "",
+        singleTask: null,
       };
     }
     case actionTypes.GET_TASKS: {
