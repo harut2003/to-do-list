@@ -83,32 +83,42 @@ export function deleteSelectedTasks(selectedTasks, hideFunction) {
 
     request(`${apiHost}/task`, "PATCH", {
       tasks: [...selectedTasks],
-    }).then((selectedTasks) => {
-      dispatch({ type: actionTypes.DELETE_SELECTED_TASKS, selectedTasks });
-      hideFunction();
-    });
+    })
+      .then((selectedTasks) => {
+        dispatch({ type: actionTypes.DELETE_SELECTED_TASKS, selectedTasks });
+        hideFunction();
+      })
+      .catch((err) => {
+        dispatch({ type: actionTypes.ERROR, error: err.message });
+      });
   };
 }
 export function addTask(newTask, hideModal) {
   return (dispatch) => {
     dispatch({ type: actionTypes.PENDING });
 
-    request(`${apiHost}/task`, "POST", newTask).then((newTask) => {
-      dispatch({ type: actionTypes.ADD_TASK, newTask });
-      hideModal();
-    });
+    request(`${apiHost}/task`, "POST", newTask)
+      .then((newTask) => {
+        dispatch({ type: actionTypes.ADD_TASK, newTask });
+        hideModal();
+      })
+      .catch((err) => {
+        dispatch({ type: actionTypes.ERROR, error: err.message });
+      });
   };
 }
 export function editTask(editedTask, closeModal, from) {
   return (dispatch) => {
     dispatch({ type: actionTypes.PENDING });
 
-    request(`${apiHost}/task/${editedTask._id}`, "PUT", editedTask).then(
-      (editedTask) => {
+    request(`${apiHost}/task/${editedTask._id}`, "PUT", editedTask)
+      .then((editedTask) => {
         dispatch({ type: actionTypes.EDIT_TASK, editedTask, from });
         closeModal();
-      }
-    );
+      })
+      .catch((err) => {
+        dispatch({ type: actionTypes.ERROR, error: err.message });
+      });
   };
 }
 
