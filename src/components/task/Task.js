@@ -21,7 +21,7 @@ class Task extends PureComponent {
               checked={selected}
             />
             <Link to={`/task/${_id}`}>
-              <Card.Title>{title.slice(0, 10)}</Card.Title>
+              <Card.Title>{textCut(title, _id, 20)}</Card.Title>
             </Link>
 
             <Card.Text>{textCut(description, _id)} </Card.Text>
