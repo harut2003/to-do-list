@@ -1,0 +1,10 @@
+/* a {
+  color: white;
+} */
+.selected {
+  color: tomato !important;
+  font-size: 22px;
+}
+.menu-link {
+  margin-right: 10px;
+}

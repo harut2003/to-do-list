@@ -1,0 +1,13 @@
+export const GET_TASKS = "GET_TASKS";
+export const ADD_TASK = "ADD_TASK";
+export const DELETE_TASK = "DELETE_TASK";
+export const EDIT_TASK = "EDIT_TASK";
+export const SET_SELECTED_TASKS = "SET_SELECTED_TASKS";
+export const DELETE_SELECTED_TASKS = "DELETE_SELECTED_TASKS";
+export const VISIBLE_TASK_MODAL = "VISIBLE_TASK_MODAL";
+export const SELECT_TOGGLE = "SELECT_TOGGLE";
+export const GET_TASK = "GET_TASK";
+export const PENDING = "PENDING";
+export const ERROR = "ERROR";
+export const SET_FILTERS = "SET_FILTERS";
+export const CLEAR_FILTERS = "CLEAR_FILTERS";
