@@ -114,7 +114,6 @@ class ToDo extends Component {
         </Row>
         <Row>
           <Col>
-            <Date />
             <Button
               className="w-100"
               onClick={this.openModal}
@@ -123,6 +122,7 @@ class ToDo extends Component {
             >
               Add task
             </Button>
+            <Date />
           </Col>
         </Row>
         <Row>

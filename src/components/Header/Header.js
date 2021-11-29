@@ -11,25 +11,27 @@ function Header({ clearFilters }) {
         <Nav className="me-auto align-items-center">
           <NavLink
             className={({ isActive }) =>
-              "me-3 " + (isActive ? styles.selected : "")
+              `me-3 ${styles.navlink} ` + (isActive ? styles.selected : "")
             }
             to="/home"
-            onClick={() => clearFilters("home")}
+            onClick={() => clearFilters()}
           >
             Home
           </NavLink>
           <NavLink
             className={({ isActive }) =>
-              "me-3 " + (isActive ? styles.selected : "")
+              `me-3 ${styles.navlink} ` + (isActive ? styles.selected : "")
             }
+            onClick={() => clearFilters()}
             to="/about"
           >
             About
           </NavLink>
           <NavLink
             className={({ isActive }) =>
-              "me-3 " + (isActive ? styles.selected : "")
+              `me-3 ${styles.navlink} ` + (isActive ? styles.selected : "")
             }
+            onClick={() => clearFilters()}
             to="/contact"
           >
             Contact

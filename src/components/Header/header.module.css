@@ -1,8 +1,7 @@
-/* a {
-  color: white;
-} */
+.navlink {
+  color: white !important;
+}
 .selected {
-  color: tomato !important;
   font-size: 22px;
 }
 .menu-link {

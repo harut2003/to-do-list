@@ -47,11 +47,12 @@ function DatePick({ setFilters, searchingParams }) {
     setFilters(name, value ? formatDate(value.toISOString()) : value);
   };
   return (
-    <div>
+    <div className="d-flex mt-3 mb-3 justify-content-between">
       {dateOptions.map((option, index) => (
         <div key={index}>
-          {option.label}
           <DatePicker
+            className="p-1 rounded border"
+            placeholderText={option.label}
             selected={
               searchingParams[option.value]
                 ? new Date(searchingParams[option.value])
