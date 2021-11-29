@@ -107,14 +107,19 @@ export function addTask(newTask, hideModal) {
       });
   };
 }
-export function editTask(editedTask, closeModal, from) {
+export function editTask(task, closeModal, from) {
   return (dispatch) => {
     dispatch({ type: actionTypes.PENDING });
 
-    request(`${apiHost}/task/${editedTask._id}`, "PUT", editedTask)
+    request(`${apiHost}/task/${task._id}`, "PUT", task)
       .then((editedTask) => {
-        dispatch({ type: actionTypes.EDIT_TASK, editedTask, from });
-        closeModal();
+        dispatch({
+          type: actionTypes.EDIT_TASK,
+          editedTask,
+          from,
+          status: task.status,
+        });
+        closeModal && closeModal();
       })
       .catch((err) => {
         dispatch({ type: actionTypes.ERROR, error: err.message });

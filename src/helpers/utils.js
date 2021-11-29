@@ -1,5 +1,5 @@
-export function formatDate(date) {
-  return date.toString().slice(0, 10);
+export function formatDate(date, size = 10) {
+  return date.toString().slice(0, size);
 }
 export function textCut(str = "", taskId, cutSize = 60) {
   if (str.length < cutSize) {

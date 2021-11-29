@@ -32,7 +32,6 @@ class ToDo extends Component {
   };
 
   componentDidMount() {
-    console.log("componentDidMount");
     if (history.location.search) {
       const options = history.location.search
         .slice(1)
@@ -66,8 +65,6 @@ class ToDo extends Component {
   };
 
   changeStatus = (e, name) => {
-    console.log(e);
-    console.log(name);
     if (name === "active") {
       this.setState({
         done: false,
@@ -79,24 +76,6 @@ class ToDo extends Component {
         done: !this.state.done,
       });
     }
-    // console.log(this.state[name]);
-    // const toggleName = this.state[name];
-    // this.setState({
-    //   [name]: !toggleName,
-    // });
-    // let sendingValue;
-    // if (this.state.active) {
-    //   sendingValue = "active";
-    // } else if (this.state.done) {
-    //   sendingValue = "done";
-    // }
-    // console.log(
-    //   "this.state.active",
-    //   this.state.active,
-    //   "this.state.done",
-    //   this.state.done
-    // );
-    // this.props.setFilters("status", sendingValue);
   };
   componentDidUpdate(prevProps, prevState) {
     const { active, done } = this.state;
@@ -109,7 +88,7 @@ class ToDo extends Component {
       } else if (done) {
         sendingValue = "done";
       }
-      if (thisStatus === sendingValue) {
+      if (thisStatus === sendingValue || (!thisStatus && !sendingValue)) {
         return;
       }
       this.props.setFilters("status", sendingValue);

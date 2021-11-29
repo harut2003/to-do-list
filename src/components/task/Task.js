@@ -3,15 +3,31 @@ import { Button, Card, Form } from "react-bootstrap";
 import styles from "./task.module.css";
 import PropTypes from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
+import {
+  faTrash,
+  faEdit,
+  faCheck,
+  faClock,
+} from "@fortawesome/free-solid-svg-icons";
 import { formatDate, textCut } from "../../helpers/utils";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { deleteTask, setSelectedTasks } from "../../store/actions";
+import { deleteTask, setSelectedTasks, editTask } from "../../store/actions";
+
 class Task extends PureComponent {
+  // changeStatus = () => {
+  //   const newTask = { ...this.props.task };
+  //   newTask.date = formatDate(newTask.date);
+  //   newTask.status === "active"
+  //     ? (newTask.status = "done")
+  //     : (newTask.status = "active");
+  //   this.props.editTask(newTask, null, "status", newTask.status);
+  // };
   render() {
-    const { task, disabled, selected, editedTask, deleteTask } = this.props;
-    const { _id, title, description, date } = task;
+    const { task, disabled, selected, editedTask, deleteTask, editTask } =
+      this.props;
+    const { _id, title, description, date, status } = task;
+
     return (
       <Card className={`h-100 ${selected ? styles.selected : ""}`}>
         <Card.Body className={styles.card}>
@@ -28,8 +44,29 @@ class Task extends PureComponent {
           </div>
 
           <div className="mt-2">
+            <Card.Text>Status: {status} </Card.Text>
             <Card.Text>{formatDate(date)}</Card.Text>
-            <Button variant="warning" onClick={() => editedTask(task)}>
+            {status === "active" ? (
+              <Button
+                onClick={() => editTask({ status: "done", _id: task._id })}
+                variant="warning"
+              >
+                <FontAwesomeIcon icon={faClock} />
+              </Button>
+            ) : (
+              <Button
+                onClick={() => editTask({ status: "active", _id: task._id })}
+                variant="success"
+              >
+                <FontAwesomeIcon icon={faCheck} />
+              </Button>
+            )}
+
+            <Button
+              className="ms-3"
+              variant="secondary"
+              onClick={() => editedTask(task)}
+            >
               <FontAwesomeIcon icon={faEdit} />
             </Button>
             <Button
@@ -40,6 +77,9 @@ class Task extends PureComponent {
             >
               <FontAwesomeIcon icon={faTrash} />
             </Button>
+            <p className={styles.created}>
+              Created at {formatDate(task.created_at)}
+            </p>
           </div>
         </Card.Body>
       </Card>
@@ -57,6 +97,7 @@ Task.propTypes = {
 const mapDispatchToProps = {
   deleteTask,
   setSelectedTasks,
+  editTask,
 };
 
 export default connect(null, mapDispatchToProps)(Task);

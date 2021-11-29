@@ -28,7 +28,6 @@ function reducer(state = defaultState, action) {
         isLoading: true,
         successMessage: "",
         errorMessage: "",
-        singleTask: null,
       };
     }
     case actionTypes.GET_TASKS: {
@@ -66,14 +65,19 @@ function reducer(state = defaultState, action) {
     }
     case actionTypes.EDIT_TASK: {
       const { editedTask } = action;
+      let successMessage = `Task edited successfully`;
+      if (action.status) {
+        successMessage = `Task is ${action.status}`;
+      }
       if (action.from === "single") {
         return {
           ...state,
           singleTask: editedTask,
           isLoading: false,
-          successMessage: "Task edited successfully",
+          successMessage,
         };
       }
+
       const tasks = [...state.tasks];
       const editedIndex = tasks.findIndex((obj) => obj._id === editedTask._id);
       tasks[editedIndex] = editedTask;
@@ -81,7 +85,7 @@ function reducer(state = defaultState, action) {
         ...state,
         tasks,
         isLoading: false,
-        successMessage: "Task edited successfully",
+        successMessage,
       };
     }
     case actionTypes.SET_SELECTED_TASKS: {

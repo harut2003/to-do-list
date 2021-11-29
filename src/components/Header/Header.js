@@ -14,7 +14,7 @@ function Header({ clearFilters }) {
               "me-3 " + (isActive ? styles.selected : "")
             }
             to="/home"
-            onClick={clearFilters}
+            onClick={() => clearFilters("home")}
           >
             Home
           </NavLink>
