@@ -1,4 +1,6 @@
+import { checkAuthentication } from "../helpers/Storage";
 import * as actionTypes from "./actionTypes";
+
 const defaultSearchingParams = {
   sort: null,
   search: "",
@@ -18,6 +20,7 @@ const defaultState = {
   successMessage: "",
   errorMessage: "",
   searchingParams: defaultSearchingParams,
+  isAuthenticated: checkAuthentication(),
 };
 
 function reducer(state = defaultState, action) {
@@ -155,6 +158,21 @@ function reducer(state = defaultState, action) {
       };
     }
 
+    case actionTypes.REGISTER: {
+      return {
+        ...state,
+        isLoading: false,
+        successMessage: "You have successfully registered",
+      };
+    }
+
+    case actionTypes.LOGIN: {
+      return {
+        ...state,
+        isLoading: false,
+        isAuthenticated: true,
+      };
+    }
     default:
       return state;
   }

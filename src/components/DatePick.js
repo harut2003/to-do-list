@@ -1,7 +1,8 @@
+import { Col, Row } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { connect } from "react-redux";
-import { formatDate } from "../helpers/utils";
+import { timeZone } from "../helpers/utils";
 import { setFilters } from "../store/actions";
 
 const dateOptions = [
@@ -43,25 +44,26 @@ function DatePick({ setFilters, searchingParams }) {
     //   ...dates,
     //   [name]: value,
     // });
-    //    console.log(new Date(formatDate(value.toISOString())));
-    setFilters(name, value ? formatDate(value.toISOString()) : value);
+    setFilters(name, value ? timeZone(value) : value);
   };
   return (
-    <div className="d-flex mt-3 mb-3 justify-content-between">
-      {dateOptions.map((option, index) => (
-        <div key={index}>
-          <DatePicker
-            className="p-1 rounded border"
-            placeholderText={option.label}
-            selected={
-              searchingParams[option.value]
-                ? new Date(searchingParams[option.value])
-                : ""
-            }
-            onChange={(value) => handleChangeDate(value, option.value)}
-          />
-        </div>
-      ))}
+    <div>
+      <Row className="d-flex mt-3 mb-3 justify-content-between">
+        {dateOptions.map((option, index) => (
+          <Col key={index}>
+            <DatePicker
+              className="p-1 rounded border mb-2 justify-content-center"
+              placeholderText={option.label}
+              selected={
+                searchingParams[option.value]
+                  ? new Date(searchingParams[option.value])
+                  : ""
+              }
+              onChange={(value) => handleChangeDate(value, option.value)}
+            />
+          </Col>
+        ))}
+      </Row>
     </div>
   );
 }

@@ -20,7 +20,7 @@ const statusOptions = [
     value: "done",
   },
 ];
-
+let isMounted = false;
 class ToDo extends Component {
   state = {
     tasks: [],
@@ -43,6 +43,7 @@ class ToDo extends Component {
     } else {
       this.props.getTasks();
     }
+    isMounted = true;
   }
 
   handleToggle = () => {
@@ -81,6 +82,7 @@ class ToDo extends Component {
     const { active, done } = this.state;
     const thisStatus = this.props.searchingParams.status;
     const prevStatus = prevProps.searchingParams.status;
+    const { searchingParams } = this.props;
     if (prevState.active !== active || prevState.done !== done) {
       let sendingValue = "";
       if (active) {
@@ -98,6 +100,16 @@ class ToDo extends Component {
         this.setState({ [thisStatus]: true });
       } else {
         this.setState({ active: false, done: false });
+      }
+    }
+    if (prevProps.searchingParams !== searchingParams) {
+      const SearchValues = Object.values(searchingParams);
+      if (SearchValues.some((param) => param)) {
+        this.props.getTasks(searchingParams);
+        return;
+      }
+      if (isMounted) {
+        this.props.getTasks();
       }
     }
   }
@@ -122,6 +134,10 @@ class ToDo extends Component {
             >
               Add task
             </Button>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
             <Date />
           </Col>
         </Row>

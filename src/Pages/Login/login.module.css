@@ -1,0 +1,19 @@
+@import url("https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600,700,800");
+
+.titles {
+  font-weight: 500;
+  font-family: "Fira Sans", sans-serif;
+  text-align: center;
+}
+
+.auth-wrapper {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  text-align: left;
+}
+.container {
+  position: relative;
+  top: 25%;
+  left: 50%;
+}

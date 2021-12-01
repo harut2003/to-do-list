@@ -21,6 +21,10 @@ export function getTasks(params = {}) {
     request(`${apiHost}/task/?${query}`)
       .then((tasks) => {
         dispatch({ type: actionTypes.GET_TASKS, tasks });
+        if (!query) {
+          history.push("/home");
+          return;
+        }
         history.replace(query && "?" + query.toString());
       })
       .catch((err) => {
@@ -57,13 +61,13 @@ export function selectToggle(tasks, selectedTasks) {
   };
 }
 
-export function deleteTask(id, from, goHome) {
+export function deleteTask(id, from) {
   return (dispatch) => {
     dispatch({ type: actionTypes.PENDING });
     request(`${apiHost}/task/${id}`, "DELETE")
       .then(() => {
         dispatch({ type: actionTypes.DELETE_TASK, deletedId: id, from });
-        goHome && goHome("/home");
+        from === "single" && history.push("/home");
       })
       .catch((err) => {
         dispatch({ type: actionTypes.ERROR, error: err.message });
@@ -135,6 +139,39 @@ export function setFilters(key, value) {
 
 export function clearFilters() {
   return (dispatch) => {
+    history.push({
+      search: "",
+    });
     dispatch({ type: actionTypes.CLEAR_FILTERS });
+  };
+}
+
+export function register(user) {
+  return (dispatch) => {
+    dispatch({ type: actionTypes.PENDING });
+
+    request(`${apiHost}/user`, "POST", user)
+      .then(() => {
+        dispatch({ type: actionTypes.REGISTER });
+        history.push("/sign-in");
+      })
+      .catch((err) => {
+        dispatch({ type: actionTypes.ERROR, error: err.message });
+      });
+  };
+}
+export function login(user, remember) {
+  return (dispatch) => {
+    dispatch({ type: actionTypes.PENDING });
+
+    request(`${apiHost}/user/sign-in`, "POST", user)
+      .then((token) => {
+        dispatch({ type: actionTypes.LOGIN });
+        remember && localStorage.setItem("token", JSON.stringify(token));
+        history.push("/home");
+      })
+      .catch((err) => {
+        dispatch({ type: actionTypes.ERROR, error: err.message });
+      });
   };
 }

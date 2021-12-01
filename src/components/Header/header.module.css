@@ -1,8 +1,8 @@
 .navlink {
-  color: white !important;
+  color: #9b9d9e !important;
 }
 .selected {
-  font-size: 22px;
+  color: white !important;
 }
 .menu-link {
   margin-right: 10px;

@@ -10,19 +10,23 @@ function request(url, method = "GET", body) {
     config.body = JSON.stringify(body);
   }
 
-  return fetch(url, config)
-    .then(async (res) => {
-      const result = await res.json();
-      if (res.status >= 400) {
-        if (result.error) {
-          throw result.error;
+  return fetch(url, config).then(async (res) => {
+    const result = await res.json();
+    if (res.status >= 400) {
+      if (result.errors || result.error || result.message) {
+        if (result.errors) {
+          throw new Error(result.errors[0].message);
+        } else if (result.error) {
+          throw new Error(result.error.message);
         } else {
-          throw new Error("Something went wrong");
+          throw new Error(result.message);
         }
+      } else {
+        throw new Error("Something went wrong");
       }
-      return result;
-    })
-    
+    }
+    return result;
+  });
 }
 
 export default request;

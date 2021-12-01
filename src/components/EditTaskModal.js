@@ -1,7 +1,7 @@
 import { PureComponent } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
 import PropTypes from "prop-types";
-import { formatDate } from "../helpers/utils";
+import { timeZone } from "../helpers/utils";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { editTask } from "../store/actions";
@@ -32,7 +32,7 @@ class TaskModal extends PureComponent {
       _id,
       title,
       description,
-      date: formatDate(date.toISOString()),
+      date: timeZone(date),
     };
     this.props.editTask(editedTask, this.props.onClose, this.props.from);
   };

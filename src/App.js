@@ -6,7 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import About from "./Pages/About/About";
 import Contact from "./Pages/Contact/Contact";
 import NotFound from "./Pages/NotFound/NotFound";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Header from "./components/Header/Header";
 import SingleTask from "./Pages/SingleTask/SingleTask";
 import "./stylesheets/App.css";
@@ -15,7 +15,11 @@ import { connect } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useEffect } from "react";
-import { getTasks } from "./store/actions";
+import Login from "./Pages/Login/Login";
+import Register from "./Pages/Register/Register";
+import CustomRouter from "./helpers/CustomRouter";
+import history from "./helpers/history";
+
 //import { history } from "./helpers/history";
 const notifOptions = {
   position: "bottom-left",
@@ -26,14 +30,7 @@ const notifOptions = {
   draggable: true,
   progress: undefined,
 };
-let isFirst = true;
-function App({
-  isLoading,
-  successMessage,
-  errorMessage,
-  searchingParams,
-  getTasks,
-}) {
+function App({ isLoading, successMessage, errorMessage, isAuthenticated }) {
   //let [searchParams, setSearchParams] = useSearchParams();
   //console.log(searchParams);
   useEffect(() => {
@@ -46,46 +43,52 @@ function App({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [successMessage, errorMessage]);
 
-  useEffect(() => {
-    if (!isFirst) {
-      getTasks(searchingParams);
-    }
-    isFirst = false;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchingParams]);
+  // useEffect(() => {
 
+  // }, [searchingParams]);
+  console.log();
   return (
-    <BrowserRouter>
+    <CustomRouter history={history}>
       <Header />
       <Routes>
-        <Route exact path={"/"} element={<Navigate replace to="/home" />} />
-        <Route exact path={"/home"} element={<ToDo />} />
+        <Route
+          exact
+          path={"/"}
+          element={
+            <Navigate replace to={isAuthenticated ? "/home" : "sign-in"} />
+          }
+        />
+        <Route
+          exact
+          path={"/home"}
+          element={
+            !isAuthenticated ? <Navigate replace to={"/sign-in"} /> : <ToDo />
+          }
+        />
         <Route exact path={"/task/:taskId"} element={<SingleTask />} />
         <Route exact path={"/about"} element={<About />} />
         <Route exact path={"/Contact"} element={<Contact />} />
+        <Route exact path={"/sign-in"} element={<Login />} />
+        <Route exact path={"/sign-up"} element={<Register />} />
         <Route exact path={"/404"} element={<NotFound />} />
 
         <Route exact path={"*"} element={<NotFound />} />
       </Routes>
       {isLoading && <Spinner />}
       <ToastContainer />
-    </BrowserRouter>
+    </CustomRouter>
   );
 }
 const mapStateToProps = ({
   isLoading,
   successMessage,
   errorMessage,
-  searchingParams,
+  isAuthenticated,
 }) => ({
   isLoading,
   successMessage,
   errorMessage,
-  searchingParams,
+  isAuthenticated,
 });
 
-const mapDispatchToProps = {
-  getTasks,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(mapStateToProps, null)(App);

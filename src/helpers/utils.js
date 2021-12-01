@@ -12,3 +12,8 @@ export function textCut(str = "", cutSize = 60) {
     </>
   );
 }
+export function timeZone(date) {
+  const offset = date.getTimezoneOffset();
+  date = new Date(date.getTime() - offset * 60 * 1000);
+  return formatDate(date.toISOString());
+}

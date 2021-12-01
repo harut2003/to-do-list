@@ -1,49 +1,85 @@
 import { Navbar, Container, Nav } from "react-bootstrap";
 import { connect } from "react-redux";
-import { NavLink } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 import { clearFilters } from "../../store/actions";
 import styles from "./header.module.css";
 
-function Header({ clearFilters }) {
+function Header({ clearFilters, isAuthenticated }) {
   return (
-    <Navbar bg="dark" variant="dark">
+    <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container>
-        <Nav className="me-auto align-items-center">
-          <NavLink
-            className={({ isActive }) =>
-              `me-3 ${styles.navlink} ` + (isActive ? styles.selected : "")
-            }
-            to="/home"
-            onClick={() => clearFilters()}
-          >
-            Home
-          </NavLink>
-          <NavLink
-            className={({ isActive }) =>
-              `me-3 ${styles.navlink} ` + (isActive ? styles.selected : "")
-            }
-            onClick={() => clearFilters()}
-            to="/about"
-          >
-            About
-          </NavLink>
-          <NavLink
-            className={({ isActive }) =>
-              `me-3 ${styles.navlink} ` + (isActive ? styles.selected : "")
-            }
-            onClick={() => clearFilters()}
-            to="/contact"
-          >
-            Contact
-          </NavLink>
-        </Nav>
+        <Navbar.Brand href="#home">To Do List</Navbar.Brand>
+        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+        <Navbar.Collapse id="responsive-navbar-nav">
+          <Nav className="me-auto ms-3 d-flex align-items-lg-center">
+            {isAuthenticated && (
+              <NavLink
+                className={({ isActive }) =>
+                  `me-3 ${styles.navlink} ` + (isActive ? styles.selected : "")
+                }
+                to="/home"
+                onClick={() => clearFilters()}
+              >
+                Home
+              </NavLink>
+            )}
+
+            <NavLink
+              className={({ isActive }) =>
+                `me-3 ${styles.navlink} ` + (isActive ? styles.selected : "")
+              }
+              to="/about"
+            >
+              About
+            </NavLink>
+            <NavLink
+              className={({ isActive }) =>
+                `me-3 ${styles.navlink} ` + (isActive ? styles.selected : "")
+              }
+              to="/contact"
+            >
+              Contact
+            </NavLink>
+            {!isAuthenticated && (
+              <>
+                <NavLink
+                  className={({ isActive }) =>
+                    `me-3 ${styles.navlink} ` +
+                    (isActive ? styles.selected : "")
+                  }
+                  to="/sign-in"
+                >
+                  Login
+                </NavLink>
+                <NavLink
+                  className={({ isActive }) =>
+                    `me-3 ${styles.navlink} ` +
+                    (isActive ? styles.selected : "")
+                  }
+                  to="/sign-up"
+                >
+                  Register
+                </NavLink>
+              </>
+            )}
+          </Nav>
+          <Nav className="d-flex align-items-lg-center">
+            {isAuthenticated && (
+              <Link to="/sign-in" className={`me-3 ${styles.navlink} `}>
+                Log out{" "}
+              </Link>
+            )}
+          </Nav>
+        </Navbar.Collapse>
       </Container>
     </Navbar>
   );
 }
 
+const mapStateToProps = ({ isAuthenticated }) => ({ isAuthenticated });
+
 const mapDispatchToProps = {
   clearFilters,
 };
 
-export default connect(null, mapDispatchToProps)(Header);
+export default connect(mapStateToProps, mapDispatchToProps)(Header);
