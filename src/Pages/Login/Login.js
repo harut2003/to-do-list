@@ -93,6 +93,7 @@ function Login({ login }) {
                 onChange={changeInputValue}
                 type="password"
                 placeholder="password"
+                onKeyDown={(e) => e.key === "Enter" && sendData()}
               />
               <Form.Text className="text-danger">{errors.password}</Form.Text>
             </FloatingLabel>

@@ -6,7 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import About from "./Pages/About/About";
 import Contact from "./Pages/Contact/Contact";
 import NotFound from "./Pages/NotFound/NotFound";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Navigate, Route } from "react-router-dom";
 import Header from "./components/Header/Header";
 import SingleTask from "./Pages/SingleTask/SingleTask";
 import "./stylesheets/App.css";
@@ -19,6 +19,7 @@ import Login from "./Pages/Login/Login";
 import Register from "./Pages/Register/Register";
 import CustomRouter from "./helpers/CustomRouter";
 import history from "./helpers/history";
+import AuthRoute from "./components/AuthRoute";
 
 //import { history } from "./helpers/history";
 const notifOptions = {
@@ -51,25 +52,32 @@ function App({ isLoading, successMessage, errorMessage, isAuthenticated }) {
     <CustomRouter history={history}>
       <Header />
       <Routes>
+        <Route exact path="/" element={<AuthRoute type="private" />}>
+          <Route exact path={"/"} element={<Navigate replace to={"/home"} />} />
+        </Route>
+
+        <Route exact path="/home" element={<AuthRoute type="private" />}>
+          <Route exact path={"/home"} element={<ToDo />} />
+        </Route>
         <Route
           exact
-          path={"/"}
-          element={
-            <Navigate replace to={isAuthenticated ? "/home" : "sign-in"} />
-          }
-        />
-        <Route
-          exact
-          path={"/home"}
-          element={
-            !isAuthenticated ? <Navigate replace to={"/sign-in"} /> : <ToDo />
-          }
-        />
-        <Route exact path={"/task/:taskId"} element={<SingleTask />} />
+          path="/task/:taskId"
+          element={<AuthRoute type="private" />}
+        >
+          <Route exact path={"/task/:taskId"} element={<SingleTask />} />
+        </Route>
+
         <Route exact path={"/about"} element={<About />} />
         <Route exact path={"/Contact"} element={<Contact />} />
-        <Route exact path={"/sign-in"} element={<Login />} />
-        <Route exact path={"/sign-up"} element={<Register />} />
+
+        <Route exact path="/sign-in" element={<AuthRoute type="public" />}>
+          <Route exact path={"/sign-in"} element={<Login />} />
+        </Route>
+
+        <Route exact path="/sign-up" element={<AuthRoute type="public" />}>
+          <Route exact path={"/sign-up"} element={<Register />} />
+        </Route>
+
         <Route exact path={"/404"} element={<NotFound />} />
 
         <Route exact path={"*"} element={<NotFound />} />

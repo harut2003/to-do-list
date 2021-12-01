@@ -1,6 +1,7 @@
 import request from "../helpers/request";
 import * as actionTypes from "./actionTypes";
 import history from "../helpers/history";
+import requestWithoutToken from "../helpers/auth";
 
 const apiHost = process.env.REACT_APP_API_HOST;
 
@@ -22,7 +23,7 @@ export function getTasks(params = {}) {
       .then((tasks) => {
         dispatch({ type: actionTypes.GET_TASKS, tasks });
         if (!query) {
-          history.push("/home");
+          history.replace("/home");
           return;
         }
         history.replace(query && "?" + query.toString());
@@ -150,7 +151,7 @@ export function register(user) {
   return (dispatch) => {
     dispatch({ type: actionTypes.PENDING });
 
-    request(`${apiHost}/user`, "POST", user)
+    requestWithoutToken(`${apiHost}/user`, "POST", user)
       .then(() => {
         dispatch({ type: actionTypes.REGISTER });
         history.push("/sign-in");
@@ -164,7 +165,7 @@ export function login(user, remember) {
   return (dispatch) => {
     dispatch({ type: actionTypes.PENDING });
 
-    request(`${apiHost}/user/sign-in`, "POST", user)
+    requestWithoutToken(`${apiHost}/user/sign-in`, "POST", user)
       .then((token) => {
         dispatch({ type: actionTypes.LOGIN });
         remember && localStorage.setItem("token", JSON.stringify(token));

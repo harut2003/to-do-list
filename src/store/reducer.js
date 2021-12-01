@@ -1,4 +1,4 @@
-import { checkAuthentication } from "../helpers/Storage";
+import { checkAuthentication } from "../helpers/auth";
 import * as actionTypes from "./actionTypes";
 
 const defaultSearchingParams = {

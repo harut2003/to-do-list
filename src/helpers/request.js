@@ -1,8 +1,14 @@
-function request(url, method = "GET", body) {
+import { getToken } from "./auth";
+
+async function request(url, method = "GET", body) {
+  let token = await getToken();
+
+  console.log(token);
   const config = {
     method: method,
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     },
   };
 
