@@ -2,7 +2,7 @@ import { Navbar, Container, Nav } from "react-bootstrap";
 import { connect } from "react-redux";
 import { NavLink, Link } from "react-router-dom";
 import { logOut } from "../../helpers/auth";
-import { clearFilters, getUser } from "../../store/actions";
+import { clearFilters } from "../../store/actions";
 import styles from "./header.module.css";
 
 function Header({ clearFilters, isAuthenticated }) {
@@ -94,7 +94,6 @@ const mapStateToProps = ({ isAuthenticated }) => ({
 
 const mapDispatchToProps = {
   clearFilters,
-  getUser,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);
