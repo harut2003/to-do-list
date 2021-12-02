@@ -21,6 +21,7 @@ export function getTasks(params = {}) {
     dispatch({ type: actionTypes.PENDING });
     request(`${apiHost}/task/?${query}`)
       .then((tasks) => {
+        if(!tasks) return;
         dispatch({ type: actionTypes.GET_TASKS, tasks });
         if (!query) {
           history.replace("/home");
@@ -39,6 +40,7 @@ export const getTask = (id) => {
     dispatch({ type: actionTypes.PENDING });
     request(`${apiHost}/task/${id}`)
       .then((singleTask) => {
+        if (!singleTask) return;
         dispatch({ type: actionTypes.GET_TASK, singleTask });
       })
       .catch((err) => {
@@ -66,7 +68,8 @@ export function deleteTask(id, from) {
   return (dispatch) => {
     dispatch({ type: actionTypes.PENDING });
     request(`${apiHost}/task/${id}`, "DELETE")
-      .then(() => {
+      .then((res) => {
+        if (!res) return;
         dispatch({ type: actionTypes.DELETE_TASK, deletedId: id, from });
         from === "single" && history.push("/home");
       })
@@ -90,6 +93,7 @@ export function deleteSelectedTasks(selectedTasks, hideFunction) {
       tasks: [...selectedTasks],
     })
       .then((selectedTasks) => {
+        if (!selectedTasks) return;
         dispatch({ type: actionTypes.DELETE_SELECTED_TASKS, selectedTasks });
         hideFunction();
       })
@@ -104,6 +108,7 @@ export function addTask(newTask, hideModal) {
 
     request(`${apiHost}/task`, "POST", newTask)
       .then((newTask) => {
+        if (!newTask) return;
         dispatch({ type: actionTypes.ADD_TASK, newTask });
         hideModal();
       })
@@ -118,6 +123,7 @@ export function editTask(task, closeModal, from) {
 
     request(`${apiHost}/task/${task._id}`, "PUT", task)
       .then((editedTask) => {
+        if (!editedTask) return;
         dispatch({
           type: actionTypes.EDIT_TASK,
           editedTask,
@@ -140,6 +146,7 @@ export function setFilters(key, value) {
 
 export function clearFilters() {
   return (dispatch) => {
+    
     history.push({
       search: "",
     });
@@ -161,15 +168,15 @@ export function register(user) {
       });
   };
 }
-export function login(user, remember) {
+export function login(user) {
   return (dispatch) => {
     dispatch({ type: actionTypes.PENDING });
 
     requestWithoutToken(`${apiHost}/user/sign-in`, "POST", user)
       .then((token) => {
         dispatch({ type: actionTypes.LOGIN });
-        remember && localStorage.setItem("token", JSON.stringify(token));
-        history.push("/home");
+        localStorage.setItem("token", JSON.stringify(token));
+        // history.push("/home");
       })
       .catch((err) => {
         dispatch({ type: actionTypes.ERROR, error: err.message });

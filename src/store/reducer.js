@@ -173,6 +173,13 @@ function reducer(state = defaultState, action) {
         isAuthenticated: true,
       };
     }
+    case actionTypes.LOGOUT: {
+      return {
+        ...state,
+        isLoading: false,
+        isAuthenticated: false,
+      };
+    }
     default:
       return state;
   }

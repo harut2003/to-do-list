@@ -1,6 +1,10 @@
 import decode from "jwt-decode";
+import { store } from "../store/store";
+import { LOGOUT } from "../store/actionTypes";
 
-export const checkAuthentication = () => !!localStorage.getItem("token");
+export function checkAuthentication() {
+  return !!localStorage.getItem("token");
+}
 
 export default function requestWithoutToken(url, method = "GET", body) {
   const config = {
@@ -39,27 +43,30 @@ export const getToken = () => {
   if (token) {
     const decoded = decode(token);
     const parsed = JSON.parse(token);
-    if (decoded.exp - new Date().getTime() / 1000 > 30) {
+    if (decoded.exp - new Date().getTime() / 1000 > 570) {
       return Promise.resolve(parsed.jwt);
     } else {
       const apiHost = process.env.REACT_APP_API_HOST;
-      return fetch(
-        `${apiHost}/user/${decoded.userId || decoded.user_id}/token`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ refreshToken: parsed.refreshToken }),
-        }
-      )
-        .then((result) => result.json())
-        .then((token) => {
-          console.log(token);
-          localStorage.setItem("token", JSON.stringify(token));
 
+      return requestWithoutToken(
+        `${apiHost}/user/${decoded.userId || decoded.user_id}/token`,
+        "PUT",
+        { refreshToken: parsed.refreshToken }
+      )
+        .then((token) => {
+          localStorage.setItem("token", JSON.stringify(token));
           return token.jwt;
+        })
+        .catch(() => {
+          logOut();
         });
     }
+  } else {
+    logOut();
   }
 };
+
+export function logOut() {
+  localStorage.removeItem("token");
+  store.dispatch({ type: LOGOUT });
+}

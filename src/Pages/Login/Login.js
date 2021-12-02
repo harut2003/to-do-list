@@ -19,7 +19,6 @@ function Login({ login }) {
     password: null,
   });
   const [data, setData] = useState(newLogin);
-  const [remember, setRemember] = useState(true);
   const sendData = () => {
     if (!Object.values(errors).every((field) => !field)) {
       return;
@@ -38,7 +37,7 @@ function Login({ login }) {
       return;
     }
 
-    login(data, remember);
+    login(data);
   };
 
   const changeInputValue = ({ target: { name, value } }) => {
@@ -59,73 +58,65 @@ function Login({ login }) {
   };
 
   return (
-    <Container>
-      <Row>
-        <Col xs={6}>
-          <div className={styles.container}>
-            <h3 className={styles.titles}>Sign In</h3>
+    <div className={styles.container}>
+      <Container>
+        <Row className="justify-content-center">
+          <Col xl={6} xs={12}>
+            <div>
+              <h3 className={styles.titles}>Sign In</h3>
 
-            <FloatingLabel
-              controlId="floatingInput"
-              label="Email address"
-              className="mb-3 mt-3"
-            >
-              <Form.Control
-                value={data.email}
-                className={errors.email && stylesContact.invalid}
-                name="email"
-                type="email"
-                onChange={changeInputValue}
-                placeholder="name@example.com"
-              />
-              <Form.Text className="text-danger">{errors.email}</Form.Text>
-            </FloatingLabel>
-
-            <FloatingLabel
-              controlId="floatingPassword"
-              label="Password"
-              className="mb-3"
-            >
-              <Form.Control
-                value={data.password}
-                className={errors.password && stylesContact.invalid}
-                name="password"
-                onChange={changeInputValue}
-                type="password"
-                placeholder="password"
-                onKeyDown={(e) => e.key === "Enter" && sendData()}
-              />
-              <Form.Text className="text-danger">{errors.password}</Form.Text>
-            </FloatingLabel>
-
-            <div className="form-group d-flex justify-content-between">
-              <div className="custom-control custom-checkbox">
-                <input
-                  type="checkbox"
-                  className="custom-control-input me-1"
-                  id="customCheck1"
-                  checked={remember}
-                  onChange={() => setRemember(!remember)}
+              <FloatingLabel
+                controlId="floatingInput"
+                label="Email address"
+                className="mb-3 mt-3"
+              >
+                <Form.Control
+                  value={data.email}
+                  className={errors.email && stylesContact.invalid}
+                  name="email"
+                  type="email"
+                  onChange={changeInputValue}
+                  placeholder="name@example.com"
                 />
-                <label className="custom-control-label" htmlFor="customCheck1">
-                  Remember me
-                </label>
-              </div>
-              <p>
-                Dont have an account <Link to="/sign-up">sign up?</Link>
-              </p>
-            </div>
+                <Form.Text className="text-danger">{errors.email}</Form.Text>
+              </FloatingLabel>
 
-            <button
-              onClick={sendData}
-              className="btn btn-primary btn-block d-flex m-auto w-25 justify-content-center mt-3"
-            >
-              Submit
-            </button>
-          </div>
-        </Col>
-      </Row>
-    </Container>
+              <FloatingLabel
+                controlId="floatingPassword"
+                label="Password"
+                className="mb-3"
+              >
+                <Form.Control
+                  value={data.password}
+                  className={errors.password && stylesContact.invalid}
+                  name="password"
+                  onChange={changeInputValue}
+                  type="password"
+                  placeholder="password"
+                  onKeyDown={(e) => e.key === "Enter" && sendData()}
+                />
+                <Form.Text className="text-danger">{errors.password}</Form.Text>
+              </FloatingLabel>
+
+              <div className="form-group d-flex justify-content-between">
+                <div className="custom-control custom-checkbox">
+                </div>
+                <p>
+                  Dont have an account <Link to="/sign-up">sign up?</Link>
+                </p>
+              </div>
+
+              <button
+                onClick={sendData}
+                className="btn btn-primary btn-block d-flex m-auto w-25 justify-content-center mt-3"
+              >
+                Submit
+              </button>
+            </div>
+          </Col>
+        </Row>
+      </Container>
+    </div>
   );
 }
 

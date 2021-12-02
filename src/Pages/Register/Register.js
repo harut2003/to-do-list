@@ -97,106 +97,108 @@ function Register({ register }) {
     register(data);
   };
   return (
-    <Container>
-      <Row>
-        <Col xs={6}>
-          <div className={styles.container}>
-            <h3 className={styles.titles}>Sign Up</h3>
+    <div className={styles.container}>
+      <Container>
+        <Row className="justify-content-center">
+          <Col xl={6} xs={12}>
+            <div>
+              <h3 className={styles.titles}>Sign Up</h3>
 
-            <FloatingLabel
-              controlId="floatingName"
-              label="Name"
-              className="mb-3 mt-3"
-            >
-              <Form.Control
-                value={data.name}
-                className={errors.name && stylesContact.invalid}
-                name="name"
-                type="text"
-                onChange={changeInputValue}
-                placeholder="name"
-              />
-              <Form.Text className="text-danger">{errors.name}</Form.Text>
-            </FloatingLabel>
+              <FloatingLabel
+                controlId="floatingName"
+                label="Name"
+                className="mb-3 mt-3"
+              >
+                <Form.Control
+                  value={data.name}
+                  className={errors.name && stylesContact.invalid}
+                  name="name"
+                  type="text"
+                  onChange={changeInputValue}
+                  placeholder="name"
+                />
+                <Form.Text className="text-danger">{errors.name}</Form.Text>
+              </FloatingLabel>
 
-            <FloatingLabel
-              controlId="floatingSurname"
-              label="Last name"
-              className="mb-3 mt-3"
-            >
-              <Form.Control
-                value={data.surname}
-                className={errors.surname && stylesContact.invalid}
-                name="surname"
-                type="text"
-                onChange={changeInputValue}
-                placeholder="surname"
-              />
-              <Form.Text className="text-danger">{errors.surname}</Form.Text>
-            </FloatingLabel>
+              <FloatingLabel
+                controlId="floatingSurname"
+                label="Last name"
+                className="mb-3 mt-3"
+              >
+                <Form.Control
+                  value={data.surname}
+                  className={errors.surname && stylesContact.invalid}
+                  name="surname"
+                  type="text"
+                  onChange={changeInputValue}
+                  placeholder="surname"
+                />
+                <Form.Text className="text-danger">{errors.surname}</Form.Text>
+              </FloatingLabel>
 
-            <FloatingLabel
-              controlId="floatingInput"
-              label="Email address"
-              className="mb-3 mt-3"
-            >
-              <Form.Control
-                value={data.email}
-                className={errors.email && stylesContact.invalid}
-                name="email"
-                type="email"
-                onChange={changeInputValue}
-                placeholder="name@example.com"
-              />
-              <Form.Text className="text-danger">{errors.email}</Form.Text>
-            </FloatingLabel>
+              <FloatingLabel
+                controlId="floatingInput"
+                label="Email address"
+                className="mb-3 mt-3"
+              >
+                <Form.Control
+                  value={data.email}
+                  className={errors.email && stylesContact.invalid}
+                  name="email"
+                  type="email"
+                  onChange={changeInputValue}
+                  placeholder="name@example.com"
+                />
+                <Form.Text className="text-danger">{errors.email}</Form.Text>
+              </FloatingLabel>
 
-            <FloatingLabel
-              controlId="floatingPassword"
-              label="Password"
-              className="mb-3"
-            >
-              <Form.Control
-                value={data.password}
-                className={errors.password && stylesContact.invalid}
-                name="password"
-                onChange={changeInputValue}
-                type="password"
-                placeholder="password"
-              />
-              <Form.Text className="text-danger">{errors.password}</Form.Text>
-            </FloatingLabel>
-            <FloatingLabel
-              controlId="floatingConfirmPassword"
-              label="Confirm password"
-              className="mb-3"
-            >
-              <Form.Control
-                value={data.confirmPassword}
-                className={errors.confirmPassword && stylesContact.invalid}
-                name="confirmPassword"
-                onChange={changeInputValue}
-                type="password"
-                placeholder="confirmPassword"
-              />
-              <Form.Text className="text-danger">
-                {errors.confirmPassword}
-              </Form.Text>
-            </FloatingLabel>
-            <p>
-              Already registered <Link to="/sign-in">sign in?</Link>
-            </p>
-            <Button
-              className="btn btn-primary btn-block d-flex m-auto w-25 justify-content-center mt-3"
-              type="submit"
-              onClick={sendData}
-            >
-              Sign Up
-            </Button>
-          </div>
-        </Col>
-      </Row>
-    </Container>
+              <FloatingLabel
+                controlId="floatingPassword"
+                label="Password"
+                className="mb-3"
+              >
+                <Form.Control
+                  value={data.password}
+                  className={errors.password && stylesContact.invalid}
+                  name="password"
+                  onChange={changeInputValue}
+                  type="password"
+                  placeholder="password"
+                />
+                <Form.Text className="text-danger">{errors.password}</Form.Text>
+              </FloatingLabel>
+              <FloatingLabel
+                controlId="floatingConfirmPassword"
+                label="Confirm password"
+                className="mb-3"
+              >
+                <Form.Control
+                  value={data.confirmPassword}
+                  className={errors.confirmPassword && stylesContact.invalid}
+                  name="confirmPassword"
+                  onChange={changeInputValue}
+                  type="password"
+                  placeholder="confirmPassword"
+                />
+                <Form.Text className="text-danger">
+                  {errors.confirmPassword}
+                </Form.Text>
+              </FloatingLabel>
+              <p>
+                Already registered <Link to="/sign-in">sign in?</Link>
+              </p>
+              <Button
+                className="btn btn-primary btn-block d-flex m-auto w-25 justify-content-center mt-3"
+                type="submit"
+                onClick={sendData}
+              >
+                Sign Up
+              </Button>
+            </div>
+          </Col>
+        </Row>
+      </Container>
+    </div>
   );
 }
 

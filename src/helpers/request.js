@@ -2,8 +2,8 @@ import { getToken } from "./auth";
 
 async function request(url, method = "GET", body) {
   let token = await getToken();
+  if (!token) return;
 
-  console.log(token);
   const config = {
     method: method,
     headers: {

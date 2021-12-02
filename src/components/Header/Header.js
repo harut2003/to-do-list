@@ -1,6 +1,7 @@
 import { Navbar, Container, Nav } from "react-bootstrap";
 import { connect } from "react-redux";
 import { NavLink, Link } from "react-router-dom";
+import { logOut } from "../../helpers/auth";
 import { clearFilters } from "../../store/actions";
 import styles from "./header.module.css";
 
@@ -72,7 +73,11 @@ function Header({ clearFilters, isAuthenticated }) {
           </Nav>
           <Nav className="d-flex align-items-lg-center">
             {isAuthenticated && (
-              <Link to="/sign-in" className={`me-3 ${styles.selected} `}>
+              <Link
+                onClick={logOut}
+                to="/sign-in"
+                className={`me-3 ${styles.selected} `}
+              >
                 Log out{" "}
               </Link>
             )}
