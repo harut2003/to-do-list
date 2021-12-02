@@ -37,7 +37,6 @@ class TaskModal extends PureComponent {
       description,
       date: timeZone(date),
     };
-    console.log(newTask);
     this.props.addTask(newTask, this.props.toggleModal);
   };
   handleChangeDate = (e) => {

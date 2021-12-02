@@ -43,7 +43,7 @@ export const getToken = () => {
   if (token) {
     const decoded = decode(token);
     const parsed = JSON.parse(token);
-    if (decoded.exp - new Date().getTime() / 1000 > 570) {
+    if (decoded.exp - new Date().getTime() / 1000 > 60) {
       return Promise.resolve(parsed.jwt);
     } else {
       const apiHost = process.env.REACT_APP_API_HOST;

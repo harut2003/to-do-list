@@ -21,7 +21,7 @@ export function getTasks(params = {}) {
     dispatch({ type: actionTypes.PENDING });
     request(`${apiHost}/task/?${query}`)
       .then((tasks) => {
-        if(!tasks) return;
+        if (!tasks) return;
         dispatch({ type: actionTypes.GET_TASKS, tasks });
         if (!query) {
           history.replace("/home");
@@ -146,7 +146,6 @@ export function setFilters(key, value) {
 
 export function clearFilters() {
   return (dispatch) => {
-    
     history.push({
       search: "",
     });
@@ -183,3 +182,18 @@ export function login(user) {
       });
   };
 }
+
+// export function getUser() {
+//   return (dispatch) => {
+//     request(`${apiHost}/user/`)
+//       .then((user) => {
+//         console.log(user);
+//         dispatch({ type: actionTypes.USER, user });
+//         //localStorage.setItem("token", JSON.stringify(token));
+//         // history.push("/home");
+//       })
+//       .catch((err) => {
+//         dispatch({ type: actionTypes.ERROR, error: err.message });
+//       });
+//   };
+// }
