@@ -7,7 +7,13 @@ import styles from "./header.module.css";
 
 function Header({ clearFilters, isAuthenticated }) {
   return (
-    <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+    <Navbar
+      className={styles.navbar}
+      collapseOnSelect
+      expand="lg"
+      bg="dark"
+      variant="dark"
+    >
       <Container>
         <Navbar.Brand>
           <NavLink

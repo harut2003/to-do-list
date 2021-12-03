@@ -10,6 +10,8 @@ import Date from "./DatePick";
 import { connect } from "react-redux";
 import { getTasks, selectToggle, setFilters } from "../store/actions";
 import history from "../helpers/history";
+
+
 const statusOptions = [
   {
     label: "Active",
@@ -118,7 +120,7 @@ class ToDo extends Component {
     const { tasks, selectedTasks } = this.props;
     const selectUn = tasks.length === selectedTasks.size;
     return (
-      <Container className="mt-3">
+      <Container>
         <Row className="mb-4">
           <Col>
             <Search />
