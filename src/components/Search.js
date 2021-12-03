@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from "react";
 import { InputGroup, FormControl } from "react-bootstrap";
 import { connect } from "react-redux";
 import { setFilters } from "../store/actions";
-import styles from "./Header/header.module.css";
 // const statusOptions = [
 //   {
 //     label: "All",
