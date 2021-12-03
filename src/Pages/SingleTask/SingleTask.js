@@ -37,7 +37,7 @@ function SingleTask({ getTask, task, deleteTask, editTask }) {
   };
   return (
     <Container>
-      <Card>
+      <Card className="container-fix">
         <Card.Body>
           {task && (
             <>

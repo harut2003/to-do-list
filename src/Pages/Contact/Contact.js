@@ -80,8 +80,8 @@ export default function Contact() {
   return (
     <Container>
       <Row className="justify-content-center">
-        <Col xs={8}>
-          <Form.Group className="mb-3 mt-3">
+        <Col xs={12} md={8}>
+          <Form.Group className="mb-3 container-fix">
             <h1 className="text-center">Contact Us</h1>
             <FloatingLabel
               controlId="floatingName"

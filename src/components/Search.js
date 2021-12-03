@@ -52,7 +52,7 @@ function Search({ setFilters, searchingParams }) {
   }, [autoSearch]);
 
   return (
-    <div className={styles.search}>
+    <div className="container-fix">
       <InputGroup>
         <FormControl
           value={searchValue}

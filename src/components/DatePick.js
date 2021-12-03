@@ -50,9 +50,9 @@ function DatePick({ setFilters, searchingParams }) {
     <div>
       <Row className="d-flex mt-3 mb-3 justify-content-between">
         {dateOptions.map((option, index) => (
-          <Col key={index}>
+          <Col key={index} className="text-center" xs={12} sm={6} lg={3}>
             <DatePicker
-              className="p-1 rounded border mb-2 justify-content-center"
+              className="p-1 rounded border mb-2 justify-content-center w-100"
               placeholderText={option.label}
               selected={
                 searchingParams[option.value]
