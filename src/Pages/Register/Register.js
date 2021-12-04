@@ -97,7 +97,7 @@ function Register({ register }) {
     register(data);
   };
   return (
-    <div className={styles.container}>
+    <div className={` ${styles.container}`}>
       <Container>
         <Row className="justify-content-center ">
           <Col xl={6} xs={12}>
