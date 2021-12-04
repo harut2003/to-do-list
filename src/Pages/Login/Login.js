@@ -62,7 +62,7 @@ function Login({ login }) {
       <Container>
         <Row className="justify-content-center">
           <Col xl={6} xs={12}>
-            <div>
+            <div className="container-fix">
               <h3 className={styles.titles}>Sign In</h3>
 
               <FloatingLabel
@@ -99,8 +99,7 @@ function Login({ login }) {
               </FloatingLabel>
 
               <div className="form-group d-flex justify-content-between">
-                <div className="custom-control custom-checkbox">
-                </div>
+                <div className="custom-control custom-checkbox"></div>
                 <p>
                   Dont have an account <Link to="/sign-up">sign up?</Link>
                 </p>

@@ -99,9 +99,9 @@ function Register({ register }) {
   return (
     <div className={styles.container}>
       <Container>
-        <Row className="justify-content-center">
+        <Row className="justify-content-center ">
           <Col xl={6} xs={12}>
-            <div>
+            <div className="container-fix">
               <h3 className={styles.titles}>Sign Up</h3>
 
               <FloatingLabel
