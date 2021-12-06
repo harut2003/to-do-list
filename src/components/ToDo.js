@@ -11,7 +11,6 @@ import { connect } from "react-redux";
 import { getTasks, selectToggle, setFilters } from "../store/actions";
 import history from "../helpers/history";
 
-
 const statusOptions = [
   {
     label: "Active",

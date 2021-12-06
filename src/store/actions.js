@@ -173,8 +173,8 @@ export function login(user) {
 
     requestWithoutToken(`${apiHost}/user/sign-in`, "POST", user)
       .then((token) => {
-        dispatch({ type: actionTypes.LOGIN });
         localStorage.setItem("token", JSON.stringify(token));
+        dispatch({ type: actionTypes.LOGIN });
         // history.push("/home");
       })
       .catch((err) => {
@@ -183,17 +183,43 @@ export function login(user) {
   };
 }
 
-// export function getUser() {
-//   return (dispatch) => {
-//     request(`${apiHost}/user/`)
-//       .then((user) => {
-//         console.log(user);
-//         dispatch({ type: actionTypes.USER, user });
-//         //localStorage.setItem("token", JSON.stringify(token));
-//         // history.push("/home");
-//       })
-//       .catch((err) => {
-//         dispatch({ type: actionTypes.ERROR, error: err.message });
-//       });
-//   };
-// }
+export function getUser() {
+  return (dispatch) => {
+    dispatch({ type: actionTypes.PENDING });
+    request(`${apiHost}/user/`)
+      .then((user) => {
+        dispatch({ type: actionTypes.USER, user });
+      })
+      .catch((err) => {
+        dispatch({ type: actionTypes.ERROR, error: err.message });
+      });
+  };
+}
+
+export function changeUserData(user, closeModal) {
+  return (dispatch) => {
+    dispatch({ type: actionTypes.PENDING });
+    request(`${apiHost}/user`, "PUT", user)
+      .then((user) => {
+        closeModal();
+        dispatch({ type: actionTypes.CHANGE_USER, user });
+      })
+      .catch((err) => {
+        dispatch({ type: actionTypes.ERROR, error: err.message });
+      });
+  };
+}
+
+export function changeUserPassword(passwords, closeModal) {
+  return (dispatch) => {
+    dispatch({ type: actionTypes.PENDING });
+    request(`${apiHost}/user/password`, "PUT", passwords)
+      .then(() => {
+        closeModal();
+        dispatch({ type: actionTypes.CHANGE_PASSWORD });
+      })
+      .catch((err) => {
+        dispatch({ type: actionTypes.ERROR, error: err.message });
+      });
+  };
+}

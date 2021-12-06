@@ -9,13 +9,11 @@ import {
 } from "react-bootstrap";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
+import { emailValid, passwordValid } from "../../helpers/Regexp";
 import { register } from "../../store/actions";
 import stylesContact from "../Contact/contact.module.css";
 import styles from "../Login/login.module.css";
 
-const re =
-  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-const passwordRe = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
 function Register({ register }) {
   const newLogin = {
     name: "",
@@ -42,7 +40,7 @@ function Register({ register }) {
     }
 
     if (name === "email" && value) {
-      if (!re.test(value)) {
+      if (!emailValid.test(value)) {
         setError({ ...errors, email: "Incorrect email" });
       } else {
         setError({ ...errors, email: null });
@@ -50,7 +48,7 @@ function Register({ register }) {
     }
 
     if (name === "password" && value) {
-      if (!passwordRe.test(value)) {
+      if (!passwordValid.test(value)) {
         setError({
           ...errors,
           password: "Min 8 characters, at least a number",

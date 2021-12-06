@@ -59,6 +59,7 @@ function DatePick({ setFilters, searchingParams }) {
                   ? new Date(searchingParams[option.value])
                   : ""
               }
+              autoComplete="off"
               onChange={(value) => handleChangeDate(value, option.value)}
             />
           </Col>

@@ -5,9 +5,7 @@ import { Link } from "react-router-dom";
 import { login } from "../../store/actions";
 import stylesContact from "../Contact/contact.module.css";
 import styles from "./login.module.css";
-
-const re =
-  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+import { emailValid } from "../../helpers/Regexp";
 
 function Login({ login }) {
   const newLogin = {
@@ -48,7 +46,7 @@ function Login({ login }) {
     }
 
     if (name === "email" && value) {
-      if (!re.test(value)) {
+      if (!emailValid.test(value)) {
         setError({ ...errors, email: "Incorrect email" });
       } else {
         setError({ ...errors, email: null });

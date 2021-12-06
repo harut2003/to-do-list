@@ -54,6 +54,7 @@ export const getToken = () => {
         { refreshToken: parsed.refreshToken }
       )
         .then((token) => {
+          console.log(token);
           localStorage.setItem("token", JSON.stringify(token));
           return token.jwt;
         })

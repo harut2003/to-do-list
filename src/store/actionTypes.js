@@ -14,3 +14,6 @@ export const CLEAR_FILTERS = "CLEAR_FILTERS";
 export const REGISTER = "REGISTER";
 export const LOGIN = "LOGIN";
 export const LOGOUT = "LOGOUT";
+export const USER = "USER";
+export const CHANGE_USER = "CHANGE_USER";
+export const CHANGE_PASSWORD = "CHANGE_PASSWORD";

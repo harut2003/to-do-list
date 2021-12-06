@@ -1,8 +1,8 @@
 import { getToken } from "./auth";
 
-async function request(url, method = "GET", body) {
-  let token = await getToken();
-  if (!token) return;
+export default async function request(url, method = "GET", body) {
+  const token = await getToken();
+  if (!token) return Promise.resolve(null);
 
   const config = {
     method: method,
@@ -16,23 +16,17 @@ async function request(url, method = "GET", body) {
     config.body = JSON.stringify(body);
   }
 
-  return fetch(url, config).then(async (res) => {
-    const result = await res.json();
-    if (res.status >= 400) {
-      if (result.errors || result.error || result.message) {
-        if (result.errors) {
-          throw new Error(result.errors[0].message);
-        } else if (result.error) {
-          throw new Error(result.error.message);
-        } else {
-          throw new Error(result.message);
-        }
+  return fetch(url, config).then(async (response) => {
+    const res = await response.json();
+
+    if (response.status >= 400 && response.status < 600) {
+      if (res.error) {
+        throw res.error;
       } else {
-        throw new Error("Something went wrong");
+        throw new Error("Something went wrong!");
       }
     }
-    return result;
+
+    return res;
   });
 }
-
-export default request;

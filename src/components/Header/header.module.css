@@ -13,3 +13,19 @@
   z-index: 10;
   top: 0;
 }
+.data {
+  color: white;
+}
+.sign_out {
+  width: 100%;
+  padding: 4px 16px;
+  color: #dee2e6;
+}
+.sign_out:hover {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.15);
+}
+.dropdown-menu {
+  display: flex !important;
+  flex-direction: column;
+}

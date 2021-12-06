@@ -21,6 +21,7 @@ const defaultState = {
   errorMessage: "",
   searchingParams: defaultSearchingParams,
   isAuthenticated: checkAuthentication(),
+  user: null,
 };
 
 function reducer(state = defaultState, action) {
@@ -132,6 +133,21 @@ function reducer(state = defaultState, action) {
         isLoading: false,
       };
     }
+    case actionTypes.USER: {
+      return {
+        ...state,
+        user: action.user,
+        isLoading: false,
+      };
+    }
+    case actionTypes.CHANGE_USER: {
+      return {
+        ...state,
+        user: action.user,
+        successMessage: "You have successfully changed your data",
+        isLoading: false,
+      };
+    }
     case actionTypes.ERROR: {
       return {
         ...state,
@@ -178,6 +194,13 @@ function reducer(state = defaultState, action) {
         ...defaultState,
         isLoading: false,
         isAuthenticated: false,
+      };
+    }
+    case actionTypes.CHANGE_PASSWORD: {
+      return {
+        ...state,
+        isLoading: false,
+        successMessage: "You have successfully changed your password",
       };
     }
     default:
