@@ -34,12 +34,7 @@ function Search({ setFilters, searchingParams }) {
 
   const autoSearch = useCallback(() => {
     if (!isFirst && searchingParams.search !== searchValue) {
-      const timer = setTimeout(() => {
-        setFilters("search", searchValue);
-      }, 700);
-      return () => {
-        clearTimeout(timer);
-      };
+      setFilters("search", searchValue);
     }
 
     isFirst = false;
@@ -47,7 +42,12 @@ function Search({ setFilters, searchingParams }) {
   }, [searchValue]);
 
   useEffect(() => {
-    autoSearch();
+    const timer = setTimeout(() => {
+      autoSearch();
+    }, 800);
+    return () => {
+      clearTimeout(timer);
+    };
   }, [autoSearch]);
 
   return (
