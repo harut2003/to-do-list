@@ -39,13 +39,8 @@ function DatePick({ setFilters, searchingParams }) {
   //   });
   // }, [searchingParams]);
 
-  const handleChangeDate = (value, name) => {
-    // setDates({
-    //   ...dates,
-    //   [name]: value,
-    // });
-    setFilters(name, value ? timeZone(value) : value);
-  };
+  const handleChangeDate = (value, name) =>  setFilters(name, value ? timeZone(value) : value);
+  
   return (
     <div>
       <Row className="d-flex mt-3 mb-3 justify-content-between">

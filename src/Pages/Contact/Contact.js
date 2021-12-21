@@ -10,6 +10,9 @@ import {
 import SubmitModal from "./SubmitModal";
 import styles from "./contact.module.css";
 import request from "../../helpers/request";
+import { ERROR } from "../../store/actionTypes";
+import { store } from "../../store/store";
+
 const apiHost = process.env.REACT_APP_API_HOST;
 
 export default function Contact() {
@@ -73,7 +76,7 @@ export default function Contact() {
         }, 2000);
       })
       .catch((err) => {
-        console.log(err);
+         store.dispatch({ type: ERROR, error: err.message });
       });
   };
 
