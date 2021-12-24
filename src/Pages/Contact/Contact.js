@@ -10,7 +10,7 @@ import {
 import SubmitModal from "./SubmitModal";
 import styles from "./contact.module.css";
 import request from "../../helpers/request";
-import { ERROR } from "../../store/actionTypes";
+import { ERROR, PENDING } from "../../store/actionTypes";
 import { store } from "../../store/store";
 
 const apiHost = process.env.REACT_APP_API_HOST;
@@ -66,7 +66,7 @@ export default function Contact() {
       setError(wrongFields);
       return;
     }
-
+    store.dispatch({ type: PENDING });
     request(`${apiHost}/form`, "POST", data)
       .then(() => {
         setData(newContact);
@@ -76,7 +76,7 @@ export default function Contact() {
         }, 2000);
       })
       .catch((err) => {
-         store.dispatch({ type: ERROR, error: err.message });
+        store.dispatch({ type: ERROR, error: err.message });
       });
   };
 
