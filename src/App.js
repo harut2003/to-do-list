@@ -20,6 +20,7 @@ import Register from "./Pages/Register/Register";
 import CustomRouter from "./helpers/CustomRouter";
 import history from "./helpers/history";
 import AuthRoute from "./components/AuthRoute";
+import Footer from "./components/Footer/Footer";
 
 //import { history } from "./helpers/history";
 const notifOptions = {
@@ -31,7 +32,7 @@ const notifOptions = {
   draggable: true,
   progress: undefined,
 };
-function App({ isLoading, successMessage, errorMessage, isAuthenticated }) {
+function App({ isLoading, successMessage, errorMessage }) {
   //let [searchParams, setSearchParams] = useSearchParams();
   //console.log(searchParams);
   useEffect(() => {
@@ -84,19 +85,14 @@ function App({ isLoading, successMessage, errorMessage, isAuthenticated }) {
       </Routes>
       {isLoading && <Spinner />}
       <ToastContainer />
+      <Footer />
     </CustomRouter>
   );
 }
-const mapStateToProps = ({
+const mapStateToProps = ({ isLoading, successMessage, errorMessage }) => ({
   isLoading,
   successMessage,
   errorMessage,
-  isAuthenticated,
-}) => ({
-  isLoading,
-  successMessage,
-  errorMessage,
-  isAuthenticated,
 });
 
 export default connect(mapStateToProps, null)(App);
