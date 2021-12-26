@@ -15,7 +15,7 @@ function Header() {
   }, [isAuthenticated, dispatch]);
 
   const [settingsModal, setSettingsModal] = useState(false);
-
+  const [expanded, setExpanded] = useState(false);
   return (
     <>
       <Navbar
@@ -24,6 +24,7 @@ function Header() {
         expand="lg"
         bg="dark"
         variant="dark"
+        expanded={expanded}
       >
         <Container>
           <Navbar.Brand>
@@ -35,7 +36,10 @@ function Header() {
               ToDo List
             </NavLink>
           </Navbar.Brand>
-          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+          <Navbar.Toggle
+            onClick={() => setExpanded(expanded ? false : "expanded")}
+            aria-controls="responsive-navbar-nav"
+          />
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="me-auto ms-3 d-flex align-items-lg-center">
               {isAuthenticated && (
@@ -45,7 +49,10 @@ function Header() {
                     (isActive ? styles.selected : "")
                   }
                   to="/home"
-                  onClick={() => dispatch(clearFilters())}
+                  onClick={() => {
+                    setExpanded(false);
+                    dispatch(clearFilters());
+                  }}
                 >
                   Home
                 </NavLink>
@@ -58,6 +65,7 @@ function Header() {
                       (isActive ? styles.selected : "")
                     }
                     to="/sign-in"
+                    onClick={() => setExpanded(false)}
                   >
                     Login
                   </NavLink>
@@ -66,6 +74,7 @@ function Header() {
                       `me-3 ${styles.navlink} ` +
                       (isActive ? styles.selected : "")
                     }
+                    onClick={() => setExpanded(false)}
                     to="/sign-up"
                   >
                     Register
@@ -73,6 +82,7 @@ function Header() {
                 </>
               )}
               <NavLink
+                onClick={() => setExpanded(false)}
                 className={({ isActive }) =>
                   `me-3 ${styles.navlink} ` + (isActive ? styles.selected : "")
                 }
@@ -81,6 +91,7 @@ function Header() {
                 About
               </NavLink>
               <NavLink
+                onClick={() => setExpanded(false)}
                 className={({ isActive }) =>
                   `me-3 ${styles.navlink} ` + (isActive ? styles.selected : "")
                 }
@@ -97,14 +108,20 @@ function Header() {
                   menuVariant="dark"
                 >
                   <NavDropdown.Item
-                    onClick={() => setSettingsModal(!settingsModal)}
+                    onClick={() => {
+                      setExpanded(false);
+                      setSettingsModal(!settingsModal);
+                    }}
                   >
                     User settings
                   </NavDropdown.Item>
                   <NavDropdown.Divider />
                   <div className="d-flex">
                     <Link
-                      onClick={logOut}
+                      onClick={() => {
+                        setExpanded(false);
+                        logOut();
+                      }}
                       to="/sign-in"
                       className={styles.sign_out}
                     >
