@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Container,
   FloatingLabel,
@@ -9,27 +9,25 @@ import {
 } from "react-bootstrap";
 import SubmitModal from "./SubmitModal";
 import styles from "./contact.module.css";
-import request from "../../helpers/request";
-import { ERROR, PENDING } from "../../store/actionTypes";
-import { store } from "../../store/store";
-
-const apiHost = process.env.REACT_APP_API_HOST;
+import { contact } from "../../store/actions";
+import { useDispatch, useSelector } from "react-redux";
+import { emailValid } from "../../helpers/Regexp";
 
 export default function Contact() {
-  const newContact = {
+  const dispatch = useDispatch();
+  const [data, setData] = useState({
     name: "",
     email: "",
     message: "",
-  };
-  const [data, setData] = useState(newContact);
+  });
   const [errors, setError] = useState({
     name: null,
     email: null,
     message: null,
   });
+  
   const [showPopUp, setPopUp] = useState(false);
-  const re =
-    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const isSuccessContact = useSelector((state) => state.isSuccessContact);
 
   const changeInputValue = ({ target: { name, value } }) => {
     if (!value) {
@@ -39,7 +37,7 @@ export default function Contact() {
     }
 
     if (name === "email" && value) {
-      if (!re.test(value)) {
+      if (!emailValid.test(value)) {
         setError({ ...errors, email: "Incorrect email" });
       } else {
         setError({ ...errors, email: null });
@@ -56,8 +54,6 @@ export default function Contact() {
     let wrongFields = {};
     dataKey.forEach((key) => {
       if (!data[key].trim()) {
-        // console.log(errors);
-        // setError({ ...errors, [key]: "Field is required" });
         wrongFields[key] = "Field is required";
       }
     });
@@ -66,20 +62,22 @@ export default function Contact() {
       setError(wrongFields);
       return;
     }
-    store.dispatch({ type: PENDING });
-    request(`${apiHost}/form`, "POST", data)
-      .then(() => {
-        setData(newContact);
-        setPopUp(true);
-        setTimeout(() => {
-          setPopUp(false);
-        }, 2000);
-      })
-      .catch((err) => {
-        store.dispatch({ type: ERROR, error: err.message });
-      });
-  };
 
+    dispatch(contact(data));
+  };
+  useEffect(() => {
+    if (isSuccessContact) {
+      setData({
+        name: "",
+        email: "",
+        message: "",
+      });
+      setPopUp(true);
+      setTimeout(() => {
+        setPopUp(false);
+      }, 2000);
+    }
+  }, [isSuccessContact]);
   return (
     <Container>
       <Row className="justify-content-center">

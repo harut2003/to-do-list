@@ -1,5 +1,6 @@
-export function formatDate(date, size = 10) {
-  return date.toString().slice(0, size);
+export function formatDate(date, size) {
+  if (date.includes("T")) date = date.replace("T", " ");
+  return date.slice(0, size);
 }
 export function textCut(str = "", cutSize = 60) {
   if (str.length <= cutSize) {
@@ -12,8 +13,8 @@ export function textCut(str = "", cutSize = 60) {
     </>
   );
 }
-export function timeZone(date) {
+export function timeZone(date, size = 10) {
   const offset = date.getTimezoneOffset();
   date = new Date(date.getTime() - offset * 60 * 1000);
-  return formatDate(date.toISOString());
+  return formatDate(date.toISOString(), size);
 }

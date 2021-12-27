@@ -9,20 +9,12 @@ import {
   faCheck,
   faClock,
 } from "@fortawesome/free-solid-svg-icons";
-import { formatDate, textCut } from "../../helpers/utils";
+import { textCut, timeZone } from "../../helpers/utils";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { deleteTask, setSelectedTasks, editTask } from "../../store/actions";
 
 class Task extends PureComponent {
-  // changeStatus = () => {
-  //   const newTask = { ...this.props.task };
-  //   newTask.date = formatDate(newTask.date);
-  //   newTask.status === "active"
-  //     ? (newTask.status = "done")
-  //     : (newTask.status = "active");
-  //   this.props.editTask(newTask, null, "status", newTask.status);
-  // };
   render() {
     const { task, disabled, selected, editedTask, deleteTask, editTask } =
       this.props;
@@ -40,12 +32,14 @@ class Task extends PureComponent {
               <Card.Title>{textCut(title, 26)}</Card.Title>
             </Link>
 
-            <Card.Text>{textCut(description)} </Card.Text>
+            <Card.Text>
+              {description && "Description: "} {textCut(description)}{" "}
+            </Card.Text>
           </div>
 
           <div className="mt-2">
             <Card.Text>Status: {status} </Card.Text>
-            <Card.Text>{formatDate(date)}</Card.Text>
+            <Card.Text>Deadline: {timeZone(new Date(date))}</Card.Text>
             {status === "active" ? (
               <Button
                 onClick={() => editTask({ status: "done", _id: task._id })}
@@ -78,7 +72,7 @@ class Task extends PureComponent {
               <FontAwesomeIcon icon={faTrash} />
             </Button>
             <p className={styles.created}>
-              Created at {formatDate(task.created_at)}
+              Created at {timeZone(new Date(task.created_at))}
             </p>
           </div>
         </Card.Body>

@@ -19,6 +19,7 @@ const defaultState = {
   isLoading: false,
   successMessage: "",
   errorMessage: "",
+  isSuccessContact: false,
   searchingParams: defaultSearchingParams,
   isAuthenticated: checkAuthentication(),
   user: null,
@@ -32,6 +33,7 @@ function reducer(state = defaultState, action) {
         isLoading: true,
         successMessage: "",
         errorMessage: "",
+        isSuccessContact: false
       };
     }
     case actionTypes.GET_TASKS: {
@@ -173,7 +175,13 @@ function reducer(state = defaultState, action) {
         searchingParams: defaultSearchingParams,
       };
     }
-
+    case actionTypes.CONTACT: {
+      return {
+        ...state,
+        isLoading: false,
+        isSuccessContact: true,
+      };
+    }
     case actionTypes.REGISTER: {
       return {
         ...state,

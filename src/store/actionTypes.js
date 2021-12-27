@@ -17,3 +17,4 @@ export const LOGOUT = "LOGOUT";
 export const USER = "USER";
 export const CHANGE_USER = "CHANGE_USER";
 export const CHANGE_PASSWORD = "CHANGE_PASSWORD";
+export const CONTACT = "CONTACT";

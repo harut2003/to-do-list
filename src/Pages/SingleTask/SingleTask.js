@@ -1,5 +1,5 @@
 import { Card, Container, Button } from "react-bootstrap";
-import { formatDate } from "../../helpers/utils";
+import { timeZone } from "../../helpers/utils";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -35,6 +35,7 @@ function SingleTask({ getTask, task, deleteTask, editTask }) {
   const toggleEditModal = () => {
     setState({ ...state, showModal: !showModal });
   };
+  console.log();
   return (
     <Container>
       <Card className="container-fix">
@@ -42,8 +43,11 @@ function SingleTask({ getTask, task, deleteTask, editTask }) {
           {task && (
             <>
               <Card.Title>{task.title}</Card.Title>
-              <Card.Text>{task.description} </Card.Text>
-              <Card.Text>{formatDate(task.date)}</Card.Text>
+              <Card.Text>
+                {task.description && "Description: "}
+                {task.description}
+              </Card.Text>
+              <Card.Text>Deadline: {timeZone(new Date(task.date))}</Card.Text>
               {task.status === "active" ? (
                 <Button
                   onClick={() =>
@@ -78,12 +82,11 @@ function SingleTask({ getTask, task, deleteTask, editTask }) {
                 <FontAwesomeIcon icon={faTrash} />
               </Button>
               <p className="mt-3 mb-1 text-muted">
-                Created at: {formatDate(task.created_at, 16).replace("T", " ")}
+                Created at: {timeZone(new Date(task.created_at), 16)}
               </p>
               {task.created_at !== task.updated_at && (
                 <p className=" mb-0 text-muted">
-                  Last change:{" "}
-                  {formatDate(task.updated_at, 16).replace("T", " ")}
+                  Last change: {timeZone(new Date(task.updated_at), 16)}
                 </p>
               )}
             </>

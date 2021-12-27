@@ -223,3 +223,15 @@ export function changeUserPassword(passwords, closeModal) {
       });
   };
 }
+export function contact(data) {
+  return (dispatch) => {
+    dispatch({ type: actionTypes.PENDING });
+    requestWithoutToken(`${apiHost}/form`, "POST", data)
+      .then(() => {
+        dispatch({ type: actionTypes.CONTACT });
+      })
+      .catch((err) => {
+        dispatch({ type: actionTypes.ERROR, error: err.message });
+      });
+  };
+}
