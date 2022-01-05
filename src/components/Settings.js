@@ -13,6 +13,9 @@ function Settings({ hideModal }) {
     surname: user.surname,
   };
   const [userData, setUserData] = useState(defaultData);
+  let defaultErrors = { name: null, surname: null };
+  const [errors, setError] = useState(defaultErrors);
+
   const [passwordModal, setPasswordModal] = useState(false);
   const changeValue = (e) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
@@ -22,6 +25,17 @@ function Settings({ hideModal }) {
     hideModal();
   };
   const handleSubmitData = () => {
+    let isError = false;
+    for (let key in userData) {
+      if (!userData[key]) {
+        defaultErrors = { ...defaultErrors, [key]: "field is required" };
+        isError = true;
+      } else {
+        defaultErrors = { ...defaultErrors, [key]: null };
+      }
+    }
+    setError(defaultErrors);
+    if (isError) return;
     if (
       userData.name === defaultData.name &&
       userData.surname === defaultData.surname
@@ -29,6 +43,7 @@ function Settings({ hideModal }) {
       hideModal();
       return;
     }
+
     dispatch(changeUserData(userData, hideModal));
   };
 
@@ -51,13 +66,14 @@ function Settings({ hideModal }) {
         <Modal.Body>
           <Form.Label>Name</Form.Label>
           <Form.Control
-            className="mb-3"
             required
             type="text"
             name="name"
             value={userData.name}
             onChange={changeValue}
           />
+          <Form.Text className="text-danger mb-3">{errors.name}</Form.Text>
+          <br />
           <Form.Label>Surname</Form.Label>
           <Form.Control
             required
@@ -66,6 +82,8 @@ function Settings({ hideModal }) {
             defaultValue={userData.surname}
             onChange={changeValue}
           />
+          <Form.Text className="text-danger mb-3">{errors.surname}</Form.Text>
+
           <hr />
           <Button variant="warning" onClick={openPasswordModal}>
             Change password
@@ -73,7 +91,7 @@ function Settings({ hideModal }) {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => cancel()}>
-            Close
+            Cancel
           </Button>
           <Button variant="primary" onClick={handleSubmitData}>
             Save Changes
