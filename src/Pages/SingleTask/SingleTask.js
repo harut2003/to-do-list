@@ -44,10 +44,16 @@ function SingleTask({ getTask, task, deleteTask, editTask }) {
             <>
               <Card.Title>{task.title}</Card.Title>
               <Card.Text>
-                {task.description && "Description: "}
+                {task.description && <em>Description: </em>}
                 {task.description}
               </Card.Text>
-              <Card.Text>Deadline: {timeZone(new Date(task.date))}</Card.Text>
+              <Card.Text>
+                <em>Status:</em>{" "}
+                {task.status[0].toUpperCase() + task.status.slice(1)}
+              </Card.Text>
+              <Card.Text>
+                <em>Deadline:</em> {timeZone(new Date(task.date))}
+              </Card.Text>
               {task.status === "active" ? (
                 <Button
                   onClick={() =>

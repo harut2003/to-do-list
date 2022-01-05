@@ -31,15 +31,21 @@ class Task extends PureComponent {
             <Link to={`/task/${_id}`}>
               <Card.Title>{textCut(title, 26)}</Card.Title>
             </Link>
-
-            <Card.Text>
-              {description && "Description: "} {textCut(description)}{" "}
-            </Card.Text>
+            <div className="d-flex">
+              <Card.Text className=" flex-wrap">
+                {textCut(description)}
+              </Card.Text>
+            </div>
           </div>
 
           <div className="mt-2">
-            <Card.Text>Status: {status} </Card.Text>
-            <Card.Text>Deadline: {timeZone(new Date(date))}</Card.Text>
+            <Card.Text>
+              <em>Status:</em>{" "}
+              {task.status[0].toUpperCase() + task.status.slice(1)}
+            </Card.Text>
+            <Card.Text>
+              <em>Deadline:</em> {timeZone(new Date(date))}
+            </Card.Text>
             {status === "active" ? (
               <Button
                 onClick={() => editTask({ status: "done", _id: task._id })}
