@@ -71,11 +71,14 @@ class TaskModal extends PureComponent {
               value={description}
             />
           </Form.Group>
-          <DatePicker
-            minDate={new Date()}
-            selected={date}
-            onChange={this.handleChangeDate}
-          />
+          <Form.Group className="mb-3">
+            <Form.Label>Deadline</Form.Label>
+            <DatePicker
+              minDate={new Date()}
+              selected={date}
+              onChange={this.handleChangeDate}
+            />
+          </Form.Group>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={onClose}>
