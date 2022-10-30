@@ -1,6 +1,6 @@
 import decode from "jwt-decode";
 import { store } from "../store/store";
-import { LOGOUT } from "../store/actionTypes";
+import { ActionTypes } from "../store/actionTypes";
 
 export function checkAuthentication() {
   return !!localStorage.getItem("token");
@@ -68,5 +68,5 @@ export const getToken = () => {
 
 export function logOut() {
   localStorage.removeItem("token");
-  store.dispatch({ type: LOGOUT });
+  store.dispatch({ type: ActionTypes.LOGOUT });
 }

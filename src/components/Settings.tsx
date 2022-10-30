@@ -1,32 +1,43 @@
 import { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { useAppSelector } from "../helpers/hooks";
 import { changeUserData } from "../store/actions";
 import ChangePassword from "./ChangePassword";
 
-function Settings({ hideModal }) {
+interface ISettingsProps {
+  hideModal: () => void;
+}
+
+function Settings({ hideModal }: ISettingsProps) {
   const dispatch = useDispatch();
 
-  const { user } = useSelector((state) => state);
+  const { user } = useAppSelector((state) => state);
+
   const defaultData = {
-    name: user.name,
-    surname: user.surname,
+    name: user?.name as string,
+    surname: user?.surname as string,
   };
+
   const [userData, setUserData] = useState(defaultData);
   let defaultErrors = { name: null, surname: null };
   const [errors, setError] = useState(defaultErrors);
 
   const [passwordModal, setPasswordModal] = useState(false);
-  const changeValue = (e) => {
+
+  const changeValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
   };
+
   const cancel = () => {
     setUserData(defaultData);
     hideModal();
   };
-  const handleSubmitData = () => {
+  const handleSubmitData = async () => {
     let isError = false;
-    for (let key in userData) {
+
+    let key: keyof typeof userData;
+    for (key in userData) {
       if (!userData[key]) {
         defaultErrors = { ...defaultErrors, [key]: "field is required" };
         isError = true;
@@ -44,7 +55,9 @@ function Settings({ hideModal }) {
       return;
     }
 
-    dispatch(changeUserData(userData, hideModal));
+    const user = await dispatch(changeUserData(userData, hideModal));
+    console.log(user.name);
+    
   };
 
   const openPasswordModal = () => {

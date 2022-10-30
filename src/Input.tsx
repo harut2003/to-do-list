@@ -1,18 +1,25 @@
 import { Component } from "react";
 import { Button, InputGroup, FormControl, Container, Row, Col, Card, Form } from 'react-bootstrap';
 import idGenerator from "./idGenerator"
-//import "./stylesheets/test.css";
+
+interface Task {
+    _id: string;
+    title: string;
+    onEdit: boolean;
+    checked: boolean;
+}
+
 export default class Input extends Component {
     state = {
         inputText: "",
-        tasks: [],
+        tasks: [] as Task[],
         selectedTasks: new Set(),
         removeAllButton: false
     }
-    changeInput = (e, stateValue) => {
+    changeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         this.setState({
-            [stateValue]: e.target.value
-        })
+            inputText: e.target.value
+        });
     }
     addText = () => {
 
@@ -32,7 +39,7 @@ export default class Input extends Component {
         });
 
     }
-    editItem = (id, bool) => {
+    editItem = (id: string, bool: boolean) => {
         const { tasks } = this.state;
         const editTasks = tasks.map(obj => {
             if (obj._id === id) {
@@ -44,12 +51,12 @@ export default class Input extends Component {
             tasks: editTasks
         });
     }
-    deleteItem = (id) => {
+    deleteItem = (id: string) => {
         const { tasks } = this.state;
         const delArr = tasks.filter(i => i._id !== id);
         this.setState({ tasks: delArr });
     }
-    changeEditInput = (e, id) => {
+    changeEditInput = (e: React.ChangeEvent<HTMLInputElement>, id: string) => {
         const { tasks } = this.state;
 
         const editValue = tasks.map(obj => {
@@ -62,7 +69,7 @@ export default class Input extends Component {
             tasks: editValue
         })
     }
-    changeCheck = (id) => {
+    changeCheck = (id: string) => {
         const { selectedTasks } = this.state;
         this.setState({
             tasks: this.state.tasks.map(obj => {
@@ -114,9 +121,7 @@ export default class Input extends Component {
                                     placeholder="Task's name"
                                     aria-label="Task's name"
                                     aria-describedby="basic-addon2"
-                                    onChange={(e) => {
-                                        this.changeInput(e, "inputText");
-                                    }}
+                                    onChange={this.changeInput}
                                     value={inputText}
                                     onKeyUp={(e) => e.key === "Enter" ? this.addText() : false}
                                 />
@@ -147,7 +152,7 @@ export default class Input extends Component {
                                                     aria-label="Default"
                                                     aria-describedby="inputGroup-sizing-default"
                                                     value={task.title}
-                                                    onChange={(e) => this.changeEditInput(e, task._id)}
+                                                    onChange={(e: React.ChangeEvent<HTMLInputElement> ) => this.changeEditInput(e, task._id)}
                                                     className="ps-1"
                                                     onKeyUp={(e) => e.key === "Enter" ? this.editItem(task._id, false) : false}
                                                 /> : task.title}

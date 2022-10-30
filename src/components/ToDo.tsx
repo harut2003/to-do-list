@@ -10,8 +10,15 @@ import Date from "./DatePick";
 import { connect } from "react-redux";
 import { getTasks, selectToggle, setFilters } from "../store/actions";
 import history from "../helpers/history";
+import { ITask, SearchKey, SearchValue } from "../interfaces";
+import { IDefaultSearchingParams } from "../store";
 
-const statusOptions = [
+interface IStatusOption {
+  label: "Active" | "Done",
+  value: "active" | "done"
+}
+
+const statusOptions: IStatusOption[] = [
   {
     label: "Active",
     value: "active",
@@ -22,7 +29,20 @@ const statusOptions = [
   },
 ];
 let isMounted = false;
-class ToDo extends Component {
+
+interface ToDoStateProps {
+  tasks: ITask[],
+  selectedTasks: Set<string>,
+  searchingParams: IDefaultSearchingParams
+};
+
+interface ToDoDispatchProps extends ToDoStateProps {
+  setFilters: (key: SearchKey, value: SearchValue) => void;
+  getTasks: (params?: IDefaultSearchingParams) => void;
+  selectToggle: (tasks: ITask[], selectedTasks: Set<string>) => void;
+}
+
+class ToDo extends Component <ToDoDispatchProps> {
   state = {
     tasks: [],
     active: false,
@@ -37,7 +57,8 @@ class ToDo extends Component {
       const options = history.location.search
         .slice(1)
         .split("&")
-        .map((option) => option.split("="));
+        .map((option) => option.split("=") as [SearchKey, SearchValue]);
+
       options.map(([optionName, optionValue]) =>
         this.props.setFilters(optionName, optionValue)
       );
@@ -52,12 +73,7 @@ class ToDo extends Component {
       show: !this.state.show,
     });
   };
-  showTaskModal = () => {
-    this.setState({
-      isVisibleModal: !this.state.isVisibleModal,
-    });
-  };
-  closeEditTaskModal = (editedTask) => {
+  closeEditTaskModal = (editedTask: ITask | null) => {
     this.setState({
       editedTask,
     });
@@ -66,7 +82,7 @@ class ToDo extends Component {
     this.setState({ showAddTaskModal: !this.state.showAddTaskModal });
   };
 
-  changeStatus = (e, name) => {
+  changeStatus = (name: 'done' | 'active') => {
     if (name === "active") {
       this.setState({
         done: false,
@@ -79,7 +95,8 @@ class ToDo extends Component {
       });
     }
   };
-  componentDidUpdate(prevProps, prevState) {
+
+  componentDidUpdate(prevProps: ToDoDispatchProps, prevState: typeof this.state) {
     const { active, done } = this.state;
     const thisStatus = this.props.searchingParams.status;
     const prevStatus = prevProps.searchingParams.status;
@@ -152,7 +169,7 @@ class ToDo extends Component {
               <div>
                 {statusOptions.map((option, i) => (
                   <Form.Check
-                    onChange={(e) => this.changeStatus(e, option.value)}
+                    onChange={() => this.changeStatus(option.value)}
                     key={i}
                     checked={this.state[option.value]}
                     inline
@@ -209,7 +226,6 @@ class ToDo extends Component {
         {!!selectedTasks.size && show && (
           <ModalRemove
             hideFunction={this.handleToggle}
-            removeFunction={this.removeSelected}
           />
         )}
         {showAddTaskModal ? <TaskModal toggleModal={this.openModal} /> : null}
@@ -217,7 +233,6 @@ class ToDo extends Component {
           <EditTaskModal
             task={editedTask}
             onClose={() => this.closeEditTaskModal(null)}
-            addTask={this.addEditedTask}
           />
         ) : null}
       </Container>
@@ -228,12 +243,10 @@ class ToDo extends Component {
 const mapStateToProps = ({
   tasks,
   selectedTasks,
-  toggleAddTaskModal,
   searchingParams,
-}) => ({
+}: ToDoStateProps) => ({
   tasks,
   selectedTasks,
-  toggleAddTaskModal,
   searchingParams,
 });
 

@@ -1,7 +1,9 @@
+import { Action, IDefaultSearchingParams } from ".";
 import { checkAuthentication } from "../helpers/auth";
-import * as actionTypes from "./actionTypes";
+import { ITask, IUser } from "../interfaces";
+import { ActionTypes } from "./actionTypes";
 
-const defaultSearchingParams = {
+const defaultSearchingParams: IDefaultSearchingParams = {
   sort: null,
   search: "",
   create_lte: null,
@@ -11,39 +13,53 @@ const defaultSearchingParams = {
   status: null,
 };
 
-const defaultState = {
+interface IDefaultState {
+  tasks: ITask[],
+  selectedTasks: Set<string>,
+  toggleAddTaskModal: boolean,
+  singleTask?: ITask,
+  isLoading: boolean,
+  successMessage: string,
+  errorMessage: string,
+  isSuccessContact: boolean,
+  searchingParams: IDefaultSearchingParams,
+  isAuthenticated: boolean,
+  user?: IUser,
+}
+
+const defaultState: IDefaultState = {
   tasks: [],
   selectedTasks: new Set(),
   toggleAddTaskModal: false,
-  singleTask: null,
+  singleTask: undefined,
   isLoading: false,
   successMessage: "",
   errorMessage: "",
   isSuccessContact: false,
   searchingParams: defaultSearchingParams,
   isAuthenticated: checkAuthentication(),
-  user: null,
+  user: undefined,
 };
 
-function reducer(state = defaultState, action) {
+function reducer(state = defaultState, action: Action): IDefaultState {
   switch (action.type) {
-    case actionTypes.PENDING: {
+    case ActionTypes.PENDING: {
       return {
         ...state,
         isLoading: true,
         successMessage: "",
         errorMessage: "",
-        isSuccessContact: false
+        isSuccessContact: false,
       };
     }
-    case actionTypes.GET_TASKS: {
+    case ActionTypes.GET_TASKS: {
       return {
         ...state,
         tasks: action.tasks,
         isLoading: false,
       };
     }
-    case actionTypes.ADD_TASK: {
+    case ActionTypes.ADD_TASK: {
       return {
         ...state,
         tasks: [...state.tasks, action.newTask],
@@ -52,15 +68,15 @@ function reducer(state = defaultState, action) {
         successMessage: "Task added successfully",
       };
     }
-    case actionTypes.DELETE_TASK: {
-      if (action.type === "single") {
-        return {
-          ...state,
-          singleTask: null,
-          isLoading: false,
-          successMessage: "Task deleted successfully",
-        };
-      }
+    case ActionTypes.DELETE_TASK: {
+      // if (action.type === "single") {
+      //   return {
+      //     ...state,
+      //     singleTask: null,
+      //     isLoading: false,
+      //     successMessage: "Task deleted successfully",
+      //   };
+      // }
       const delArr = state.tasks.filter((i) => i._id !== action.deletedId);
       return {
         ...state,
@@ -69,7 +85,7 @@ function reducer(state = defaultState, action) {
         successMessage: "Task deleted successfully",
       };
     }
-    case actionTypes.EDIT_TASK: {
+    case ActionTypes.EDIT_TASK: {
       const { editedTask } = action;
       let successMessage = `Task edited successfully`;
       if (action.status) {
@@ -94,7 +110,7 @@ function reducer(state = defaultState, action) {
         successMessage,
       };
     }
-    case actionTypes.SET_SELECTED_TASKS: {
+    case ActionTypes.SET_SELECTED_TASKS: {
       const selectedTasks = new Set(...[state.selectedTasks]);
       const { id } = action;
       if (!selectedTasks.has(id)) {
@@ -107,7 +123,7 @@ function reducer(state = defaultState, action) {
         selectedTasks,
       };
     }
-    case actionTypes.DELETE_SELECTED_TASKS: {
+    case ActionTypes.DELETE_SELECTED_TASKS: {
       return {
         ...state,
         tasks: state.tasks.filter((task) => !state.selectedTasks.has(task._id)),
@@ -116,33 +132,33 @@ function reducer(state = defaultState, action) {
         successMessage: "Tasks deleted successfully",
       };
     }
-    case actionTypes.SELECT_TOGGLE: {
+    case ActionTypes.SELECT_TOGGLE: {
       return {
         ...state,
         selectedTasks: action.selectedTasks,
       };
     }
-    case actionTypes.VISIBLE_TASK_MODAL: {
+    case ActionTypes.VISIBLE_TASK_MODAL: {
       return {
         ...state,
         toggleAddTaskModal: !state.toggleAddTaskModal,
       };
     }
-    case actionTypes.GET_TASK: {
+    case ActionTypes.GET_TASK: {
       return {
         ...state,
         singleTask: action.singleTask,
         isLoading: false,
       };
     }
-    case actionTypes.USER: {
+    case ActionTypes.USER: {
       return {
         ...state,
         user: action.user,
         isLoading: false,
       };
     }
-    case actionTypes.CHANGE_USER: {
+    case ActionTypes.CHANGE_USER: {
       return {
         ...state,
         user: action.user,
@@ -150,14 +166,14 @@ function reducer(state = defaultState, action) {
         isLoading: false,
       };
     }
-    case actionTypes.ERROR: {
+    case ActionTypes.ERROR: {
       return {
         ...state,
         errorMessage: action.error,
         isLoading: false,
       };
     }
-    case actionTypes.SET_FILTERS: {
+    case ActionTypes.SET_FILTERS: {
       // const temp = state.searchingParams;
       // temp[action.key] = action.value;
       const { key, value } = action;
@@ -169,20 +185,20 @@ function reducer(state = defaultState, action) {
         ),
       };
     }
-    case actionTypes.CLEAR_FILTERS: {
+    case ActionTypes.CLEAR_FILTERS: {
       return {
         ...state,
         searchingParams: defaultSearchingParams,
       };
     }
-    case actionTypes.CONTACT: {
+    case ActionTypes.CONTACT: {
       return {
         ...state,
         isLoading: false,
         isSuccessContact: true,
       };
     }
-    case actionTypes.REGISTER: {
+    case ActionTypes.REGISTER: {
       return {
         ...state,
         isLoading: false,
@@ -190,21 +206,21 @@ function reducer(state = defaultState, action) {
       };
     }
 
-    case actionTypes.LOGIN: {
+    case ActionTypes.LOGIN: {
       return {
         ...state,
         isLoading: false,
         isAuthenticated: true,
       };
     }
-    case actionTypes.LOGOUT: {
+    case ActionTypes.LOGOUT: {
       return {
         ...defaultState,
         isLoading: false,
         isAuthenticated: false,
       };
     }
-    case actionTypes.CHANGE_PASSWORD: {
+    case ActionTypes.CHANGE_PASSWORD: {
       return {
         ...state,
         isLoading: false,
