@@ -4,30 +4,39 @@ import history from "../helpers/history";
 import requestWithoutToken from "../helpers/auth";
 import { Dispatch } from "redux";
 import { Action, IDefaultSearchingParams } from ".";
-import { IChangedUser, ITask, IUser, SearchKey, SearchValue } from "../interfaces";
+import {
+  IChangedUser,
+  IEditTask,
+  INewTask,
+  IRequestRegister,
+  ITask,
+  IUser,
+  SearchKey,
+  SearchValue,
+} from "../interfaces";
 
 const apiHost = process.env.REACT_APP_API_HOST;
 
 export function getTasks(params?: IDefaultSearchingParams) {
-  const newParams:{
-    sort?: string,
-    search?: string,
-    create_lte?: string,
-    create_gte?: string,
-    complete_lte?: string,
-    complete_gte?:string,
-    status?: string
+  const newParams: {
+    sort?: string;
+    search?: string;
+    create_lte?: string;
+    create_gte?: string;
+    complete_lte?: string;
+    complete_gte?: string;
+    status?: string;
   } = {};
 
-  if(params) {
+  if (params) {
     let key: keyof IDefaultSearchingParams;
-    for (key in params ) {
+    for (key in params) {
       if (params[key]) {
         newParams[key] = params[key] as string;
       }
     }
   }
-  
+
   const query = Object.entries(newParams)
     .map(([key, value]) => `${key}=${value}`)
     .join("&");
@@ -100,7 +109,10 @@ export function setSelectedTasks(id: string) {
   };
 }
 
-export function deleteSelectedTasks(selectedTasks: Set<string>, hideFunction: () => void) {
+export function deleteSelectedTasks(
+  selectedTasks: Set<string>,
+  hideFunction: () => void
+) {
   return (dispatch: Dispatch<Action>) => {
     dispatch({ type: ActionTypes.PENDING });
 
@@ -117,7 +129,7 @@ export function deleteSelectedTasks(selectedTasks: Set<string>, hideFunction: ()
       });
   };
 }
-export function addTask(newTask: ITask, hideModal: () => void) {
+export function addTask(newTask: INewTask, hideModal: () => void) {
   return (dispatch: Dispatch<Action>) => {
     dispatch({ type: ActionTypes.PENDING });
 
@@ -132,7 +144,11 @@ export function addTask(newTask: ITask, hideModal: () => void) {
       });
   };
 }
-export function editTask(task: ITask, closeModal: () => void, from?: string) {
+export function editTask(
+  task: IEditTask,
+  closeModal?: (() => void) | null,
+  from?: string
+) {
   return (dispatch: Dispatch<Action>) => {
     dispatch({ type: ActionTypes.PENDING });
 
@@ -168,7 +184,7 @@ export function clearFilters() {
   };
 }
 
-export function register(user: IUser) {
+export function register(user: IRequestRegister) {
   return (dispatch: Dispatch<Action>) => {
     dispatch({ type: ActionTypes.PENDING });
 
@@ -182,7 +198,7 @@ export function register(user: IUser) {
       });
   };
 }
-export function login(user: IUser) {
+export function login<T extends object>(user: T) {
   return (dispatch: Dispatch<Action>) => {
     dispatch({ type: ActionTypes.PENDING });
 
@@ -226,12 +242,12 @@ export function changeUserData(user: IChangedUser, closeModal: () => void) {
   };
 }
 
-export function changeUserPassword(passwords: object, closeModal: () => {}) {
+export function changeUserPassword(passwords: object, closeModal: (a: boolean) => void) {
   return (dispatch: Dispatch<Action>) => {
     dispatch({ type: ActionTypes.PENDING });
     request(`${apiHost}/user/password`, "PUT", passwords)
       .then(() => {
-        closeModal();
+        closeModal(false);
         dispatch({ type: ActionTypes.CHANGE_PASSWORD });
       })
       .catch((err) => {

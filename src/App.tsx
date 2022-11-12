@@ -1,3 +1,8 @@
+
+import "bootstrap/dist/css/bootstrap.min.css";
+import "react-toastify/dist/ReactToastify.css";
+import "./stylesheets/App.css";
+
 import ToDo from "./components/ToDo";
 import About from "./Pages/About/About";
 import Contact from "./Pages/Contact/Contact";
@@ -5,7 +10,6 @@ import NotFound from "./Pages/NotFound/NotFound";
 import { Routes, Navigate, Route } from "react-router-dom";
 import Header from "./components/Header/Header";
 import SingleTask from "./Pages/SingleTask/SingleTask";
-import "./stylesheets/App.css";
 import Spinner from "./components/spinner/Spinner";
 import { connect } from "react-redux";
 import { ToastContainer, toast, ToastOptions } from "react-toastify";
@@ -17,8 +21,6 @@ import history from "./helpers/history";
 import AuthRoute from "./components/AuthRoute";
 import Footer from "./components/Footer/Footer";
 
-import "bootstrap/dist/css/bootstrap.min.css";
-import "react-toastify/dist/ReactToastify.css";
 
 interface AppProps {
   isLoading?: boolean;

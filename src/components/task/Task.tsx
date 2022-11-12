@@ -1,7 +1,6 @@
 import { PureComponent } from "react";
 import { Button, Card, Form } from "react-bootstrap";
 import styles from "./task.module.css";
-import PropTypes from "prop-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faTrash,
@@ -11,10 +10,30 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { textCut, timeZone } from "../../helpers/utils";
 import { Link } from "react-router-dom";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { deleteTask, setSelectedTasks, editTask } from "../../store/actions";
+import { ITask } from "../../interfaces";
 
-class Task extends PureComponent {
+const mapDispatchToProps = {
+  deleteTask,
+  setSelectedTasks,
+  editTask,
+};
+
+const connector = connect(null, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+interface DefaultProps {
+  task: ITask,
+  disabled: boolean,
+  selected: boolean,
+  editedTask: (task: ITask) => void,
+}
+
+type PropsTask = PropsFromRedux & DefaultProps;
+
+class Task extends PureComponent<PropsTask> {
   render() {
     const { task, disabled, selected, editedTask, deleteTask, editTask } =
       this.props;
@@ -87,17 +106,4 @@ class Task extends PureComponent {
   }
 }
 
-Task.propTypes = {
-  task: PropTypes.object.isRequired,
-  disabled: PropTypes.bool.isRequired,
-  selected: PropTypes.bool.isRequired,
-  editedTask: PropTypes.func.isRequired,
-};
-
-const mapDispatchToProps = {
-  deleteTask,
-  setSelectedTasks,
-  editTask,
-};
-
-export default connect(null, mapDispatchToProps)(Task);
+export default connector(Task);

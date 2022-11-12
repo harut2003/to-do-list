@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-import { useDispatch } from "react-redux";
-import { useAppSelector } from "../helpers/hooks";
-import { changeUserData } from "../store/actions";
+import { useActions, useAppSelector } from "../helpers/hooks";
 import ChangePassword from "./ChangePassword";
 
 interface ISettingsProps {
@@ -10,7 +8,7 @@ interface ISettingsProps {
 }
 
 function Settings({ hideModal }: ISettingsProps) {
-  const dispatch = useDispatch();
+  const { changeUserData } = useActions();
 
   const { user } = useAppSelector((state) => state);
 
@@ -55,9 +53,7 @@ function Settings({ hideModal }: ISettingsProps) {
       return;
     }
 
-    const user = await dispatch(changeUserData(userData, hideModal));
-    console.log(user.name);
-    
+    changeUserData(userData, hideModal);
   };
 
   const openPasswordModal = () => {

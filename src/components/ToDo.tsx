@@ -255,18 +255,5 @@ const mapDispatchToProps = {
   selectToggle,
   setFilters,
 };
-//selectToggle = () => {
-//   const { tasks } = this.state;
-//   const { selectedTasks } = this.props;
-//   const taskId = tasks.map((obj) => obj._id);
-//   if (tasks.length === selectedTasks.size) {
-//     this.setState({
-//       selectedTasks: new Set(),
-//     });
-//     return;
-//   }
-//   this.setState({
-//     selectedTasks: new Set(taskId),
-//   });
-// };
+
 export default connect(mapStateToProps, mapDispatchToProps)(ToDo);

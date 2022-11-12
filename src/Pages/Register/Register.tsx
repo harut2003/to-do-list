@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   Col,
   Container,
@@ -7,14 +7,22 @@ import {
   Form,
   Button,
 } from "react-bootstrap";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { Link } from "react-router-dom";
 import { emailValid, passwordValid } from "../../helpers/Regexp";
 import { register } from "../../store/actions";
 import stylesContact from "../Contact/contact.module.css";
 import styles from "../Login/login.module.css";
 
-function Register({ register }) {
+const mapDispatchToProps = {
+  register,
+};
+
+const connector = connect(null, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+function Register({ register }: PropsFromRedux) {
   const newLogin = {
     name: "",
     surname: "",
@@ -24,26 +32,28 @@ function Register({ register }) {
   };
 
   const [errors, setError] = useState({
-    name: null,
-    surname: null,
-    email: null,
-    password: null,
-    confirmPassword: null,
+    name: "",
+    surname: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
 
   const [data, setData] = useState(newLogin);
-  const changeInputValue = ({ target: { name, value } }) => {
+  const changeInputValue = ({
+    target: { name, value },
+  }: React.ChangeEvent<HTMLInputElement>) => {
     if (!value) {
       setError({ ...errors, [name]: "Field is required" });
     } else {
-      setError({ ...errors, [name]: null });
+      setError({ ...errors, [name]: "" });
     }
 
     if (name === "email" && value) {
       if (!emailValid.test(value)) {
         setError({ ...errors, email: "Incorrect email" });
       } else {
-        setError({ ...errors, email: null });
+        setError({ ...errors, email: "" });
       }
     }
 
@@ -54,7 +64,7 @@ function Register({ register }) {
           password: "Min 8 characters, at least a number",
         });
       } else {
-        setError({ ...errors, password: null });
+        setError({ ...errors, password: "" });
       }
     }
 
@@ -65,7 +75,7 @@ function Register({ register }) {
           confirmPassword: "Passwords didn't match",
         });
       } else {
-        setError({ ...errors, confirmPassword: null });
+        setError({ ...errors, confirmPassword: "" });
       }
     }
 
@@ -77,23 +87,31 @@ function Register({ register }) {
       return;
     }
 
-    const dataKey = Object.keys(data);
-    let wrongFields = {};
+    const dataKey = Object.keys(data) as (keyof typeof data)[];
+
+    let wrongFields: {
+      name?: string;
+      surname?: string;
+      email?: string;
+      password?: string;
+      confirmPassword?: string;
+    } = {};
+
     dataKey.forEach((key) => {
       if (!data[key].trim()) {
-        // console.log(errors);
-        // setError({ ...errors, [key]: "Field is required" });
         wrongFields[key] = "Field is required";
       }
     });
 
     if (Object.keys(wrongFields).length > 0) {
-      setError(wrongFields);
+      setError((prev) => ({ ...prev, ...wrongFields }));
       return;
     }
 
     register(data);
   };
+
+
   return (
     <div className={` ${styles.container}`}>
       <Container>
@@ -199,9 +217,5 @@ function Register({ register }) {
     </div>
   );
 }
-
-const mapDispatchToProps = {
-  register,
-};
 
 export default connect(null, mapDispatchToProps)(Register);

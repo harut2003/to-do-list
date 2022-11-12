@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Container,
   FloatingLabel,
@@ -9,38 +9,40 @@ import {
 } from "react-bootstrap";
 import SubmitModal from "./SubmitModal";
 import styles from "./contact.module.css";
-import { contact } from "../../store/actions";
-import { useDispatch, useSelector } from "react-redux";
 import { emailValid } from "../../helpers/Regexp";
+import { useActions, useAppSelector } from "../../helpers/hooks";
 
 export default function Contact() {
-  const dispatch = useDispatch();
+  const { contact } = useActions();
+
   const [data, setData] = useState({
     name: "",
     email: "",
     message: "",
   });
   const [errors, setError] = useState({
-    name: null,
-    email: null,
-    message: null,
+    name: "",
+    email: "",
+    message: "",
   });
-  
-  const [showPopUp, setPopUp] = useState(false);
-  const isSuccessContact = useSelector((state) => state.isSuccessContact);
 
-  const changeInputValue = ({ target: { name, value } }) => {
+  const [showPopUp, setPopUp] = useState(false);
+  const isSuccessContact = useAppSelector((state) => state.isSuccessContact);
+
+  const changeInputValue = ({
+    target: { name, value },
+  }: React.ChangeEvent<HTMLInputElement>) => {
     if (!value) {
       setError({ ...errors, [name]: "Field is required" });
     } else {
-      setError({ ...errors, [name]: null });
+      setError({ ...errors, [name]: "" });
     }
 
     if (name === "email" && value) {
       if (!emailValid.test(value)) {
         setError({ ...errors, email: "Incorrect email" });
       } else {
-        setError({ ...errors, email: null });
+        setError({ ...errors, email: "" });
       }
     }
     setData({ ...data, [name]: value });
@@ -50,8 +52,14 @@ export default function Contact() {
       return;
     }
 
-    const dataKey = Object.keys(data);
-    let wrongFields = {};
+    const dataKey = Object.keys(data) as (keyof typeof data)[];
+
+    let wrongFields: {
+      name?: string;
+      email?: string;
+      message?: string;
+    } = {};
+
     dataKey.forEach((key) => {
       if (!data[key].trim()) {
         wrongFields[key] = "Field is required";
@@ -59,11 +67,11 @@ export default function Contact() {
     });
 
     if (Object.keys(wrongFields).length > 0) {
-      setError(wrongFields);
+      setError((prev) => ({ ...prev, ...wrongFields }));
       return;
     }
 
-    dispatch(contact(data));
+    contact(data);
   };
   useEffect(() => {
     if (isSuccessContact) {

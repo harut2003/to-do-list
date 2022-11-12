@@ -1,48 +1,53 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Form, Modal, Button } from "react-bootstrap";
-import { useDispatch } from "react-redux";
+import { useActions } from "../helpers/hooks";
 import { passwordValid } from "../helpers/Regexp";
-import { changeUserPassword } from "../store/actions";
 
-function ChangePassword({ hide }) {
+interface PropsChangePassword {
+  hide: (a: boolean) => void;
+}
+
+function ChangePassword({ hide }: PropsChangePassword) {
   const defaultPasswords = {
     oldPwd: "",
     newPwd: "",
     confirmPwd: "",
   };
-  const defaultErrors = {
-    newPwd: null,
-    confirmPwd: null,
-    oldPwd: null,
+  const defaultErrors: typeof defaultPasswords = {
+    newPwd: "",
+    confirmPwd: "",
+    oldPwd: "",
   };
   const [passwords, setPasswords] = useState(defaultPasswords);
   const [errors, setErrors] = useState(defaultErrors);
-  const dispatch = useDispatch();
+  const { changeUserPassword } = useActions();
   const cancel = () => {
     setPasswords(defaultPasswords);
-    hide();
+    hide(false);
   };
 
-  const changePasswords = ({ target: { name, value } }) => {
+  const changePasswords = ({
+    target: { name, value },
+  }: React.ChangeEvent<HTMLInputElement>) => {
     setPasswords({ ...passwords, [name]: value });
     if (!value) {
       setErrors({ ...errors, [name]: "Field is required" });
       return;
     } else {
-      setErrors({ ...errors, [name]: null });
+      setErrors({ ...errors, [name]: "" });
     }
     if (name === "newPwd") {
       if (!passwordValid.test(value)) {
         setErrors({ ...errors, newPwd: "Min 8 characters, at least a number" });
       } else {
-        setErrors({ ...errors, newPwd: null });
+        setErrors({ ...errors, newPwd: "" });
       }
     }
     if (name === "confirmPwd") {
       if (value !== passwords.newPwd) {
         setErrors({ ...errors, confirmPwd: "Passwords didn't match" });
       } else {
-        setErrors({ ...errors, confirmPwd: null });
+        setErrors({ ...errors, confirmPwd: "" });
       }
     }
   };
@@ -52,8 +57,13 @@ function ChangePassword({ hide }) {
       return;
     }
 
-    const dataKey = Object.keys(passwords);
-    let wrongFields = {};
+    const dataKey = Object.keys(passwords) as (keyof typeof passwords)[];
+    let wrongFields: {
+      oldPwd?: string;
+      newPwd?: string;
+      confirmPwd?: string;
+    } = {};
+
     dataKey.forEach((key) => {
       if (!passwords[key].trim()) {
         wrongFields[key] = "Field is required";
@@ -61,7 +71,7 @@ function ChangePassword({ hide }) {
     });
 
     if (Object.keys(wrongFields).length > 0) {
-      setErrors(wrongFields);
+      setErrors((prev) => ({ ...prev, ...wrongFields }));
       return;
     }
 
@@ -70,7 +80,7 @@ function ChangePassword({ hide }) {
       newPassword: passwords.newPwd,
       confirmNewPassword: passwords.confirmPwd,
     };
-    dispatch(changeUserPassword(sendingPasswords, hide));
+    changeUserPassword(sendingPasswords, hide);
   };
 
   return (

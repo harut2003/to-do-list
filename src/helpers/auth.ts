@@ -1,13 +1,18 @@
 import decode from "jwt-decode";
 import { store } from "../store/store";
 import { ActionTypes } from "../store/actionTypes";
+import { IConfig, Method } from "./interface";
 
 export function checkAuthentication() {
   return !!localStorage.getItem("token");
 }
 
-export default function requestWithoutToken(url, method = "GET", body) {
-  const config = {
+export default function requestWithoutToken(
+  url: string,
+  method: Method = "GET",
+  body?: object
+) {
+  const config: IConfig = {
     method: method,
     headers: {
       "Content-Type": "application/json",
@@ -37,11 +42,17 @@ export default function requestWithoutToken(url, method = "GET", body) {
   });
 }
 
+interface IDecoded {
+  userId?: string;
+  user_id?: string;
+  exp: number;
+}
+
 export const getToken = () => {
   const token = localStorage.getItem("token");
 
   if (token) {
-    const decoded = decode(token);
+    const decoded: IDecoded = decode(token);
     const parsed = JSON.parse(token);
     if (decoded.exp - new Date().getTime() / 1000 > 60) {
       return Promise.resolve(parsed.jwt);

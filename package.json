@@ -58,6 +58,7 @@
     ]
   },
   "devDependencies": {
+    "@types/react-datepicker": "^4.8.0",
     "@types/redux-logger": "^3.0.9"
   }
 }

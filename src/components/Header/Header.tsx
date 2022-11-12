@@ -1,21 +1,26 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
 import { NavLink, Link } from "react-router-dom";
 import { logOut } from "../../helpers/auth";
-import { clearFilters, getUser } from "../../store/actions";
+import { useActions, useAppSelector } from "../../helpers/hooks";
 import Settings from "../Settings";
 import styles from "./header.module.css";
 
 function Header() {
-  const dispatch = useDispatch();
-  const { isAuthenticated, user } = useSelector((state) => state);
+  const { getUser, clearFilters } = useActions();
+  const { isAuthenticated, user } = useAppSelector((state) => state);
+
   useEffect(() => {
-    isAuthenticated && dispatch(getUser());
-  }, [isAuthenticated, dispatch]);
+    isAuthenticated && getUser();
+  }, [isAuthenticated, getUser]);
 
   const [settingsModal, setSettingsModal] = useState(false);
   const [expanded, setExpanded] = useState(false);
+
+  const hideModal = useCallback(() => {
+    setSettingsModal(false);
+  }, []);
+
   return (
     <>
       <Navbar
@@ -31,13 +36,13 @@ function Header() {
             <NavLink
               className={styles.selected}
               to="/home"
-              onClick={() => dispatch(clearFilters())}
+              onClick={() => clearFilters()}
             >
               ToDo List
             </NavLink>
           </Navbar.Brand>
           <Navbar.Toggle
-            onClick={() => setExpanded(expanded ? false : "expanded")}
+            onClick={() => setExpanded((prev) => !prev)}
             aria-controls="responsive-navbar-nav"
           />
           <Navbar.Collapse id="responsive-navbar-nav">
@@ -51,7 +56,7 @@ function Header() {
                   to="/home"
                   onClick={() => {
                     setExpanded(false);
-                    dispatch(clearFilters());
+                    clearFilters();
                   }}
                 >
                   Home
@@ -134,7 +139,7 @@ function Header() {
           </Navbar.Collapse>
         </Container>
       </Navbar>
-      {settingsModal && <Settings hideModal={setSettingsModal} />}
+      {settingsModal && <Settings hideModal={hideModal} />}
     </>
   );
 }

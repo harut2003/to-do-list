@@ -1,4 +1,5 @@
 import { Modal } from "react-bootstrap";
+
 export default function SubmitModal() {
   return (
     <Modal show={true} centered>

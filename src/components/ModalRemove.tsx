@@ -1,8 +1,32 @@
 import { Button, Modal } from "react-bootstrap";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { deleteSelectedTasks } from "../store/actions";
-function ModalRemove({ hideFunction, deleteSelectedTasks, selectedTasks }) {
+import { RootState } from "../store/store";
+
+const mapStateToProps = ({ selectedTasks }: RootState) => {
+  return { selectedTasks };
+};
+
+const mapDispatchToProps = {
+  deleteSelectedTasks,
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+interface IDefaultProps {
+  hideFunction: () => void;
+}
+
+type ModalRemoveProps = IDefaultProps & PropsFromRedux;
+
+function ModalRemove({
+  hideFunction,
+  deleteSelectedTasks,
+  selectedTasks,
+}: ModalRemoveProps) {
   return (
     <Modal show={true} onHide={hideFunction} centered>
       <Modal.Header closeButton>
@@ -25,13 +49,9 @@ function ModalRemove({ hideFunction, deleteSelectedTasks, selectedTasks }) {
     </Modal>
   );
 }
+
 ModalRemove.propTypes = {
   hideFunction: PropTypes.func.isRequired,
 };
-const mapStateToProps = ({ selectedTasks }) => {
-  return { selectedTasks };
-};
-const mapDispatchToProps = {
-  deleteSelectedTasks,
-};
-export default connect(mapStateToProps, mapDispatchToProps)(ModalRemove);
+
+export default connector(ModalRemove);

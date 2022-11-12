@@ -11,22 +11,40 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import EditTaskModal from "../../components/EditTaskModal";
 import { getTask, deleteTask, editTask } from "../../store/actions";
-import { connect } from "react-redux";
-import { useNavigate } from "react-router-dom";
-function SingleTask({ getTask, task, deleteTask, editTask }) {
+import { connect, ConnectedProps } from "react-redux";
+import { RootState } from "../../store/store";
+import { ITask } from "../../interfaces";
+
+const mapStateToProps = ({ singleTask }: RootState) => ({
+  task: singleTask,
+});
+
+const mapDispatchToProps = {
+  getTask,
+  deleteTask,
+  editTask,
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+function SingleTask({ getTask, task, deleteTask, editTask }: PropsFromRedux) {
   let [state, setState] = useState({
     showModal: false,
   });
   let params = useParams();
   const id = params.taskId;
   const { showModal } = state;
+
   useEffect(() => {
-    getTask(id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  let navigate = useNavigate();
+    if (id) {
+      getTask(id);
+    }
+  }, [id, getTask]);
+
   const deleteItem = () => {
-    deleteTask(task._id, "single", navigate);
+    deleteTask((task as ITask)._id, "single");
   };
 
   // const editTask = (task) => {
@@ -35,7 +53,7 @@ function SingleTask({ getTask, task, deleteTask, editTask }) {
   const toggleEditModal = () => {
     setState({ ...state, showModal: !showModal });
   };
-  console.log();
+
   return (
     <Container>
       <Card className="container-fix">
@@ -99,21 +117,11 @@ function SingleTask({ getTask, task, deleteTask, editTask }) {
           )}
         </Card.Body>
       </Card>
-      {showModal && (
+      {showModal && task && (
         <EditTaskModal task={task} from="single" onClose={toggleEditModal} />
       )}
     </Container>
   );
 }
 
-const mupStateToProps = ({ singleTask }) => ({
-  task: singleTask,
-});
-
-const mupDispatchToProps = {
-  getTask,
-  deleteTask,
-  editTask,
-};
-
-export default connect(mupStateToProps, mupDispatchToProps)(SingleTask);
+export default connector(SingleTask);

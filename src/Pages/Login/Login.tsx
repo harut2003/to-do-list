@@ -1,20 +1,28 @@
 import { useState } from "react";
 import { Col, Container, FloatingLabel, Row, Form } from "react-bootstrap";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { Link } from "react-router-dom";
 import { login } from "../../store/actions";
 import stylesContact from "../Contact/contact.module.css";
 import styles from "./login.module.css";
 import { emailValid } from "../../helpers/Regexp";
 
-function Login({ login }) {
+const mapDispatchToProps = {
+  login,
+};
+
+const connector = connect(null, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+function Login({ login }: PropsFromRedux) {
   const newLogin = {
     email: "",
     password: "",
   };
   const [errors, setError] = useState({
-    email: null,
-    password: null,
+    email: "",
+    password: "",
   });
   const [data, setData] = useState(newLogin);
   const sendData = () => {
@@ -22,8 +30,13 @@ function Login({ login }) {
       return;
     }
 
-    const dataKey = Object.keys(data);
-    let wrongFields = {};
+    const dataKey = Object.keys(data) as (keyof typeof data)[];
+
+    let wrongFields: {
+      email?: string;
+      password?: string;
+    } = {};
+
     dataKey.forEach((key) => {
       if (!data[key].trim()) {
         wrongFields[key] = "Field is required";
@@ -31,25 +44,27 @@ function Login({ login }) {
     });
 
     if (Object.keys(wrongFields).length > 0) {
-      setError(wrongFields);
+      setError((prev) => ({ ...prev, ...wrongFields }));
       return;
     }
 
     login(data);
   };
 
-  const changeInputValue = ({ target: { name, value } }) => {
+  const changeInputValue = ({
+    target: { name, value },
+  }: React.ChangeEvent<HTMLInputElement>) => {
     if (!value) {
       setError({ ...errors, [name]: "Field is required" });
     } else {
-      setError({ ...errors, [name]: null });
+      setError({ ...errors, [name]: "" });
     }
 
     if (name === "email" && value) {
       if (!emailValid.test(value)) {
         setError({ ...errors, email: "Incorrect email" });
       } else {
-        setError({ ...errors, email: null });
+        setError({ ...errors, email: "" });
       }
     }
     setData({ ...data, [name]: value });
@@ -117,8 +132,4 @@ function Login({ login }) {
   );
 }
 
-const mapDispatchToProps = {
-  login,
-};
-
-export default connect(null, mapDispatchToProps)(Login);
+export default connector(Login);

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { connect } from "react-redux";
+import { connect, ConnectedProps } from "react-redux";
 import { setFilters } from "../../store/actions";
+import { RootState } from "../../store/store";
 import styles from "./sort.module.css";
 
 const sortOptions = [
@@ -25,13 +26,24 @@ const defaultSelectedSort = {
   value: "",
   secondValue: "",
 };
-function Sort({ searchingParams, setFilters }) {
+
+const mapStateToProps = ({ searchingParams }: RootState) => ({ searchingParams });
+
+const mapDispatchToProps = {
+  setFilters,
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+function Sort({ searchingParams, setFilters }: PropsFromRedux) {
   const [selectedSort, setSort] = useState(defaultSelectedSort);
 
   let [up, setArrow] = useState(true);
   let sendingValue = "";
   // const { value, secondValue } = selectedSort;
-  const selectSortOption = (option) => {
+  const selectSortOption = (option: typeof sortOptions[0]) => {
     if (option.label === selectedSort.label) {
       up = !up;
       setArrow(up);
@@ -108,10 +120,5 @@ function Sort({ searchingParams, setFilters }) {
   );
 }
 
-const mapStateToProps = ({ searchingParams }) => ({ searchingParams });
 
-const mapDispatchToProps = {
-  setFilters,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Sort);
+export default connector(Sort);

@@ -1,8 +1,17 @@
 import { IDefaultSearchingParams } from "./store";
 
-export interface ITask {
+export interface IEditTask {
   _id: string;
   status: string;
+}
+
+export interface INewTask {
+  title: string;
+  description: string;
+  date: string;
+}
+
+export interface ITask extends IEditTask {
   owner: string;
   title: string;
   description: string;
@@ -12,10 +21,12 @@ export interface ITask {
   __v: number;
 }
 
-export interface IUser {
-  _id: string;
+export interface IRequestRegister {
   name: string;
   surname: string;
+}
+export interface IUser extends IRequestRegister {
+  _id: string;
 }
 
 export interface IChangedUser {

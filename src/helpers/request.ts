@@ -1,10 +1,16 @@
 import { getToken } from "./auth";
+import { IConfig, Method } from "./interface";
 
-export default async function request(url, method = "GET", body) {
+export default async function request<T>(
+  url: string,
+  method: Method = "GET",
+  body?: T
+) {
+
   const token = await getToken();
   if (!token) return Promise.resolve(null);
 
-  const config = {
+  const config: IConfig = {
     method: method,
     headers: {
       "Content-Type": "application/json",
